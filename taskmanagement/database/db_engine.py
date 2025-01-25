@@ -7,14 +7,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 #from my projects
-from app.pydantic_models.settings import Settings
-from app.database.db_tables.base import Base
+from taskmanagement.pydantic_models.settings import Settings
+from taskmanagement.database.db_tables.base import Base
 
 #Initialize the settings object
 settings = Settings()
 
 
-URL = settings.URL # This is the URL from the .env file
+URL = settings.DB_URL # This is the URL from the .env file
 engine = create_async_engine(URL, echo= True) # To create async engine with the output
 
 
