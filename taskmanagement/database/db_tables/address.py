@@ -3,8 +3,6 @@ from sqlalchemy.orm import Mapped, relationship
 
 from taskmanagement.database.db_tables.base import Base
 
-
-
 class Address(Base):
     __tablename__ = 'address'
     

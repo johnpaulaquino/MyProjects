@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, Date
 from sqlalchemy.orm import relationship, Mapped
 from datetime import date
 from taskmanagement.database.db_tables.base import Base
+from taskmanagement.database.db_tables.address import Address
 
 
 """
@@ -32,10 +33,11 @@ class Users(Base):
     email: str = Column('email', String, unique=True)
     password : str = Column('password', String)
     name : str = Column('name', String, nullable=False)
-    is_active : bool = Column('is_active', Boolean, default=True)
+    is_active : int = Column('is_active', Integer, default=True)
     age : int = Column('age', Integer,nullable=False)
-    b_day : date = Column('b_day', Date, nullable=False)
-    address: Mapped['Address'] = relationship('Address',back_populates='user', lazy="selectin")
+    b_day : date = Column('b_day', String, nullable=False)
+    
+    address: Mapped[list['Address']] = relationship('Address',back_populates='user', lazy="selectin")
     
     def __init__(self, email, password, name,age, b_day, **kw):
         self.email = email

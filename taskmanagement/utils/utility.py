@@ -89,9 +89,10 @@ class Utility:
             return False
     
     @staticmethod
-    def get_user_data(result_query: dict, email: str):
+    def get_user_data(result_query: dict):
+        if not result_query:
+            return False
         return UserInDB(**result_query)
-    
     @staticmethod
     def authenticate_user(result_query: dict, password: str):
         if not result_query:

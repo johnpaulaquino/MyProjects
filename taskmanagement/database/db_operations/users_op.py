@@ -11,6 +11,13 @@ class UsersQueries:
     
     @staticmethod
     async def create_user(user : Users):
+        """
+        This will create a user and save into database
+        :param user:
+            is an instance of object to create and save in database
+        :return:
+            True if added successfully, otherwise return False
+        """
         async with create_session() as db:
             try:
                 if await UsersQueries.find_user_by_email(user.email):
@@ -26,10 +33,17 @@ class UsersQueries:
     
     @staticmethod
     async def find_user_by_email(email : str):
+        """
+        This will be to search data in the database by a Email, because email is unique.
+        :param email:
+            is one of unique identifier in user information.
+        :return:
+            return the info of the users in a dictionary.
+        """
         async with create_session() as db:
             try:
                 stmt = (select(Users).
-                        where(Users.email == email))
+                        where(and_(Users.email == email)))
                 result = await db.execute(stmt)
                 user_result = result.scalars().one()
                 return user_result.to_dict()
@@ -37,4 +51,3 @@ class UsersQueries:
                 print(f'An error occurred {e}')
                 return False
 
-# print(asyncio.run(UsersQueries.find_user_by_email('paul@gmail.com')))

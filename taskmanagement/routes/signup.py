@@ -1,8 +1,11 @@
+import asyncio
+from datetime import datetime
 from fastapi import (
     APIRouter,
     HTTPException,
     status, )
 
+from taskmanagement.cached.user_cached import RedisUserCached
 from taskmanagement.pydantic_models.users_model import SignUp
 from taskmanagement.database.db_tables.users import Users
 from taskmanagement.database.db_operations.users_op import UsersQueries
@@ -23,7 +26,7 @@ async def create_account(user: SignUp):
                     password=hashed_pass,
                     name=user.name,
                     age=user.age,
-                    b_day=user.b_day))
+                    b_day=str(user.b_day)))
 
     if not new_user:
         raise HTTPException(
