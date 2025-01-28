@@ -5,23 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da48593d-a2b4-4457-b4d0-a9e4de7333ef" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/PythonProject1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PythonProject1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_operations/table_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_operations/table_op.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_operations/users_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_operations/users_op.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/cached/user_cached.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/cached/user_cached.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/address.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/address.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/users.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/pydantic_models/users_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/pydantic_models/users_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/signup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/utils/utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/utils/utility.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -37,19 +38,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.app.executor": "Run",
-    "Python.auth.executor": "Run",
-    "Python.signup.executor": "Run",
-    "Python.table_op.executor": "Run",
-    "Python.user_cached.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "taskmanagement",
-    "last_opened_file_path": "/home/paul/Desktop/PythonProject1/taskmanagement"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.auth.executor&quot;: &quot;Run&quot;,
+    &quot;Python.signup.executor&quot;: &quot;Run&quot;,
+    &quot;Python.table_op.executor&quot;: &quot;Run&quot;,
+    &quot;Python.user_cached.executor&quot;: &quot;Run&quot;,
+    &quot;Python.users_op.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;taskmanagement&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/paul/Desktop/PythonProject1/taskmanagement&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editing.templates&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python">
       <module name="PythonProject1" />

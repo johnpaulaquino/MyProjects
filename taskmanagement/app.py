@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from taskmanagement.utils.utility import Utility
 from taskmanagement.routes.signup import signup
 from taskmanagement.routes.auth import auth
-
+from taskmanagement.routes.user_address import user_address
 description = """
 # 📋 Task Management API
 """
@@ -18,6 +18,8 @@ app = FastAPI(
 
 app.include_router(signup)
 app.include_router(auth)
+app.include_router(user_address)
+
 
 
 if __name__ == '__main__':

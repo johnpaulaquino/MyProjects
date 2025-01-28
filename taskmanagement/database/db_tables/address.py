@@ -13,3 +13,15 @@ class Address(Base):
     user_id : str = Column('user_id', String, ForeignKey('users.id'))
     user : Mapped['Users'] = relationship('Users', back_populates='address', lazy='selectin')
     
+    
+    def __init__(self, user_id, municipality, city, country, postal_code, **kw):
+        super().__init__(**kw)
+        self.user_id = user_id
+        self.municipality = municipality
+        self.city = city
+        self.country = country
+        self.postal_code = postal_code
+        
+        
+        
+    

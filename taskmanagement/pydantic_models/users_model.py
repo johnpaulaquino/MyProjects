@@ -17,7 +17,7 @@ class SignUp(BaseUser):
     password: str
     name : str
     age : int
-    b_day : str
+    b_day : date
 
 class Login(BaseUser):
     password : str
@@ -27,6 +27,6 @@ class UserInDB(BaseUser):
     name: str
     hash_password : str
     age : int
-    b_day : str
+    b_day : date
     is_active: int = IsActive.TRUE
     

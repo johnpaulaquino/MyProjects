@@ -25,8 +25,8 @@ class RedisUserCached:
         if not email:
             return False
         if data and isinstance(data, dict):
-            to_string = json.dumps(data)
-            await redis_app.set(name=f'user:{email}', value=to_string)
+            
+            await redis_app.hset(name=f'user:{email}', mapping=data)
             return True
         return False
     
@@ -45,33 +45,16 @@ class RedisUserCached:
             True after updating.
         """
         
-        if not name:
+        if not name or not key:
             return False
         
-        email = f'user:{name}'
-        # get the data
-        existing_user = await redis_app.get(name=email)
-        # extract into dict
-        to_json : dict = json.loads(existing_user)
-        # update the token of existing data
-        to_json.update({key:token})
-
-        # set again the data
-        await RedisUserCached.set_user_data(email, json.dumps(to_json))
+        await redis_app.hset(name=f'user:{name}',key=key, value=token)
         return True
     
     @staticmethod
     async def get_user_by_email(email: str):
-        """
-        This method is to get the specific data in the cache.
-        :param email:
-            is the hash key in the redis to get the data that corresponds in the email
-        :return:
-            the data of the specific user
-        """
-        user = await redis_app.get(f'user:{email}')
-        to_json : dict = json.loads(user)
-        return to_json
+        existing_user = await redis_app.hgetall(name=f'user:{email}')
+        return existing_user
 
 
 user_data = {
@@ -88,6 +71,7 @@ async def main():
     await redis_app.hset('user',  mapping=user_data)
     print(await redis_app.hgetall('user'))
 
+# print(asyncio.run(redis_app.ping()))
 # print(asyncio.run(redis_app.flushall()))
 # print(asyncio.run(RedisUserCached.set_user_data('123',user_data)))
 # asyncio.run(main())

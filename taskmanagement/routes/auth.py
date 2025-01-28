@@ -23,27 +23,23 @@ async def user_authenticate(form_data : OAuth2PasswordRequestForm = Depends()):
         access_token and the toke_type if the user are authenticated.
     """
     #Check whether the user is in the cache, otherwise get the data in the database.
-    user_in_cached = await RedisUserCached.get_user_by_email(form_data.username)
-    user = user_in_cached
-    
-    if not user_in_cached:
-        user = await UsersQueries.find_user_by_email(form_data.username)
-    
-        
+    user = await RedisUserCached.get_user_by_email(form_data.username)
     if not user:
-        raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='User not found!',
-                headers= {'WWW-Authenticate' : 'Bearer'}
-        )
-   
-    if not Utility.authenticate_user(user, form_data.password):
-        raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Incorrect password, please try again',
-                headers={'WWW-Authenticate': 'Bearer'}
-        )
-    
+        user = await UsersQueries.find_user_by_email(form_data.username)
+        if not user:
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='User not found!',
+                    headers={'WWW-Authenticate': 'Bearer'}
+            )
+        if not Utility.authenticate_user(user, form_data.password):
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='Incorrect password, please try again',
+                    headers={'WWW-Authenticate': 'Bearer'}
+            )
+        
+        await RedisUserCached.set_user_data(user['email'], user)
     #This is to make an access token
     access_token = Utility.generate_access_token(data={
             'user_id': user['id'],
