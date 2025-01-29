@@ -5,3 +5,5 @@ python-jose[cryptography]
 redis
 pydantic-settings
 asyncpg
+fastapi-mail
+pyotp

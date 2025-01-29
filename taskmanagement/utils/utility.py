@@ -12,6 +12,7 @@ from taskmanagement.pydantic_models.users_model import UserInDB
 contex_password = CryptContext(schemes=['argon2'], deprecated='auto')
 settings = Settings()
 
+contex_password.hash('Paul09998614418')
 
 class Utility:
     @staticmethod
