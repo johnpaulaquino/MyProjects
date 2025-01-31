@@ -1,6 +1,7 @@
 import asyncio
 
 from taskmanagement.database.db_engine import create_session
+from taskmanagement.database.db_tables.address import Address
 from taskmanagement.database.db_tables.users import Users
 
 from sqlalchemy import select, and_
@@ -25,10 +26,23 @@ class UsersQueries:
                 db.add(user)
                 await db.commit()
                 await db.refresh(user)
-                return True
+                return user.to_dict()
             except SQLAlchemyError as e:
                 print(f'An error occurred {e}!')
                 await db.rollback()
+                return False
+    
+    @staticmethod
+    async def create_user_address(address : Address):
+        async with create_session() as db:
+            try:
+                db.add(address)
+                await db.commit()
+                await db.refresh(address)
+                return True
+            except SQLAlchemyError as e:
+                await db.rollback()
+                print(f'An error occurred {e}!')
                 return False
     
     @staticmethod
@@ -50,4 +64,5 @@ class UsersQueries:
             except SQLAlchemyError as e:
                 print(f'An error occurred {e}')
                 return False
+    
 

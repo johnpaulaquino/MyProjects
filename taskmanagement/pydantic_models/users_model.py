@@ -29,4 +29,8 @@ class UserInDB(BaseUser):
     age : int
     b_day : date
     is_active: int = IsActive.TRUE
-    
+
+
+class TokenData(BaseModel):
+    user_id : str
+    username : str

@@ -6,6 +6,8 @@ from fastapi import (
     status, )
 
 from taskmanagement.cached.user_cached import RedisUserCached
+from taskmanagement.database.db_tables.address import Address
+from taskmanagement.pydantic_models.address_model import AddressBase
 from taskmanagement.pydantic_models.users_model import SignUp
 from taskmanagement.database.db_tables.users import Users
 from taskmanagement.database.db_operations.users_op import UsersQueries
@@ -18,7 +20,7 @@ signup = APIRouter(
 
 
 @signup.post('', status_code=201)
-async def create_account(user: SignUp):
+async def create_account(user: SignUp, address: AddressBase):
     hashed_pass = Utility.hash_user_password(user.password)
     new_user = await UsersQueries.create_user(
             Users(
@@ -34,6 +36,15 @@ async def create_account(user: SignUp):
                 detail='Email is already exist, try another email.'
         )
     
+    user_address = Address(
+            user_id=new_user['id'],
+            municipality=address.municipality,
+            city=address.city,
+            country=address.country,
+            postal_code=address.postal_code)
+    
+    await UsersQueries.create_user_address(user_address)
+
     return {
             'status': 'success', 'message':
                 'Successfully created account!'

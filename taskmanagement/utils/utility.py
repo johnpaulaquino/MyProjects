@@ -1,13 +1,14 @@
 from uuid import uuid4
 
 from argon2.exceptions import Argon2Error
-from jose import jwt
+from jose import jwt, JWTError
 from datetime import timedelta, datetime, timezone
 from taskmanagement.pydantic_models.settings import Settings
 from contextlib import asynccontextmanager
 from passlib.context import CryptContext
-
-from taskmanagement.pydantic_models.users_model import UserInDB
+from fastapi import Depends, HTTPException, status
+from starlette.responses import JSONResponse
+from taskmanagement.pydantic_models.users_model import TokenData, UserInDB
 
 contex_password = CryptContext(schemes=['argon2'], deprecated='auto')
 settings = Settings()
@@ -35,7 +36,7 @@ class Utility:
         """
         to_encode = data.copy()
         
-        to_encode.update({'exp': datetime.now(timezone.utc) +  timedelta(minutes=2)})
+        to_encode.update({'exp': datetime.now(timezone.utc) +  timedelta(minutes=1)})
         token = jwt.encode(
                 to_encode,
                 key=settings.SECRET_KEY,
@@ -65,6 +66,32 @@ class Utility:
                 algorithm=settings.ALGORITHM)
         
         return token
+    
+    @staticmethod
+    def decode_generated_token(token : str):
+        try:
+            payload = jwt.decode(token,key=settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            
+            if not payload:
+                raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail='Invalid credentials!',
+                        headers={'WWW-Authenticate': 'Bearer'}
+                )
+           
+            
+        except JWTError as e:
+            raise e
+        
+        user_data = TokenData(user_id=payload['user_id'], username=payload['username'])
+        if not user_data:
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='Invalid credentials!',
+                    headers={'WWW-Authenticate': 'Bearer'}
+            )
+        
+        return user_data
     
     @staticmethod
     @asynccontextmanager

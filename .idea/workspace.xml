@@ -6,9 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="da48593d-a2b4-4457-b4d0-a9e4de7333ef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Requirements" beforeDir="false" afterPath="$PROJECT_DIR$/Requirements" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/.env" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/pydantic_models/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/pydantic_models/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_operations/users_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_operations/users_op.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/address.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/address.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/pydantic_models/users_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/pydantic_models/users_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/signup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/user_address.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/utils/utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/utils/utility.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,6 +51,7 @@
     "Python.table_op.executor": "Run",
     "Python.user_cached.executor": "Run",
     "Python.users_op.executor": "Run",
+    "Python.utility.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "taskmanagement",

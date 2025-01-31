@@ -1,6 +1,5 @@
-import json
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 
 from taskmanagement.cached.user_cached import RedisUserCached
 from taskmanagement.database.db_operations.users_op import UsersQueries
@@ -14,9 +13,10 @@ auth = APIRouter(prefix='/auth')
 
 
 @auth.post('')
-async def user_authenticate(form_data : OAuth2PasswordRequestForm = Depends()):
+async def user_authenticate(response : Response, form_data : OAuth2PasswordRequestForm = Depends(), ):
     """
     This method is for authentication of the user to get access in the data.
+    :param response:
     :param form_data:
         is the data that the user inputted in the form.
     :return:
@@ -40,10 +40,15 @@ async def user_authenticate(form_data : OAuth2PasswordRequestForm = Depends()):
             )
         
         await RedisUserCached.set_user_data(user['email'], user)
+        
     #This is to make an access token
     access_token = Utility.generate_access_token(data={
             'user_id': user['id'],
             'username' : user['name']
     })
     
-    return {'access_token' : access_token, 'access_type' : 'bearer'}
+    response.set_cookie(
+            key='access_token',
+            value=access_token,
+    )
+    return {'status' : 'success', 'message' : 'Authentication successfully!'}
