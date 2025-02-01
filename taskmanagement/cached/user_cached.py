@@ -1,7 +1,12 @@
+from pydantic import EmailStr
+from pydantic_core.core_schema import json_schema
 from redis.asyncio import Redis
 import asyncio
 import json
-from datetime import date,datetime, timezone
+from datetime import date,datetime, timezone, timedelta
+
+from taskmanagement.pydantic_models.users_schema import UserInDB
+
 #This is to create a connection in my local redis
 redis_app = Redis(
         host='127.0.0.1', #This is the localhost and it is default.
@@ -25,8 +30,7 @@ class RedisUserCached:
         if not email:
             return False
         if data and isinstance(data, dict):
-            
-            await redis_app.hset(name=f'user:{email}', mapping=data)
+            await redis_app.set(name=f'user:{email}', value=json.dumps(data))
             return True
         return False
     
@@ -53,26 +57,40 @@ class RedisUserCached:
     
     @staticmethod
     async def get_user_by_email(email: str):
-        existing_user = await redis_app.hgetall(name=f'user:{email}')
+        existing_user = await redis_app.get(name=f'user:{email}')
+        
+        if not existing_user:
+            return False
+        
+        user_data = json.loads(existing_user)  # Convert JSON string back to Python dictionary
         return existing_user
-
+    
 
 user_data = {
         "name": "John",
         "age" : 30,  # This will be converted to string in the method
         "city": "New York",
         'postal': 4009,
+        'address': {
+                'hey': '123'
+        }
+        
 }
 
-
+email : EmailStr = 'counter@gmail.com'
 async def main():
     user = await RedisUserCached.get_user_by_email('123')
     print(user)
     await redis_app.hset('user',  mapping=user_data)
     print(await redis_app.hgetall('user'))
 
+# asyncio.run(RedisUserCached.set_user_data(email,user_data))
+# print(asyncio.run(RedisUserCached.get_user_by_email(email)))
+# asyncio.run(redis_app.set('123',value=json.dumps(user_data)))
+# print(asyncio.run(redis_app.get('123')))
 # print(asyncio.run(redis_app.ping()))
 # print(asyncio.run(redis_app.flushall()))
 # print(asyncio.run(RedisUserCached.set_user_data('123',user_data)))
 # asyncio.run(main())
 # print(asyncio.run(RedisUserCached.update_access_token('123', 'toekn', 'faketoken')))
+

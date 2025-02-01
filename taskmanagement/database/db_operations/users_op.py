@@ -21,8 +21,6 @@ class UsersQueries:
         """
         async with create_session() as db:
             try:
-                if await UsersQueries.find_user_by_email(user.email):
-                    return False
                 db.add(user)
                 await db.commit()
                 await db.refresh(user)

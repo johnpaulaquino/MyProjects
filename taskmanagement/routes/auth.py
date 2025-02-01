@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response
 
 from taskmanagement.cached.user_cached import RedisUserCached
 from taskmanagement.database.db_operations.users_op import UsersQueries
-from taskmanagement.pydantic_models.users_model import Login, UserInDB
+from taskmanagement.pydantic_models.users_schema import Login, UserInDB
 from fastapi.security import OAuth2PasswordRequestForm
 
 from taskmanagement.utils.utility import Utility

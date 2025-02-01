@@ -33,10 +33,10 @@ class Users(Base):
     email: str = Column('email', String, unique=True)
     password : str = Column('password', String)
     name : str = Column('name', String, nullable=False)
-    is_active : int = Column('is_active', Integer, default=True)
+    is_active : int = Column('is_active', Integer, default=False)
     age : int = Column('age', Integer,nullable=False)
-    b_day : date = Column('b_day', String, nullable=False)
-    
+    b_day : date = Column('b_day', Date, nullable=False)
+
     address: Mapped[list['Address']] = relationship('Address',back_populates='user', lazy="selectin")
     
     def __init__(self, email, password, name,age, b_day, **kw):
@@ -45,52 +45,9 @@ class Users(Base):
         self.password = password
         self.age = age
         self.b_day = b_day
+        
         super().__init__(**kw)
     
-    # # This is a getters methods
-    # @property
-    # def get_email(self):
-    #     return self.email
-    #
-    # @property
-    # def get_password(self):
-    #     return self.password
-    #
-    # @property
-    # def get_name(self):
-    #     return self.name
-    #
-    # @property
-    # def get_is_active(self):
-    #     return self.is_active
-    #
-    # @property
-    # def get_age(self):
-    #     return self.age
-    #
-    # @property
-    # def get_b_day(self):
-    #     return self.b_day
-    #
-    # #This is setters methods
-    # def set_email(self, email : str):
-    #     self.email = email
-    #
-    # def set_password(self, password : str):
-    #     self.password = password
-    #
-    # def set_name(self, name : str):
-    #     self.name = name
-    #
-    # def set_is_active(self, is_active : bool):
-    #     self.is_active = is_active
-    #
-    # def set_age(self, age):
-    #     self.age = age
-    #
-    # def set_bday(self, b_day : date):
-    #     self.b_day = b_day
-        
     #This will return the user info as dictionary
     def to_dict(self) -> dict:
         return {

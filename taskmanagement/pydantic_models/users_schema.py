@@ -1,17 +1,10 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import date
-from enum import Enum
-
-class IsActive(Enum):
-    TRUE : int = 1
-    FALSE : int = 0
 
 # This is the base user
 class BaseUser(BaseModel):
-    email: EmailStr
+    email: str
    
-
-
 # inherit the attributes of base user
 class SignUp(BaseUser):
     password: str
@@ -28,9 +21,10 @@ class UserInDB(BaseUser):
     hash_password : str
     age : int
     b_day : date
-    is_active: int = IsActive.TRUE
+    is_active: int = 0
 
 
 class TokenData(BaseModel):
     user_id : str
     username : str
+    

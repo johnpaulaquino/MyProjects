@@ -1,19 +1,23 @@
 from uuid import uuid4
 
 from argon2.exceptions import Argon2Error
+from fastapi_mail import MessageSchema
 from jose import jwt, JWTError
 from datetime import timedelta, datetime, timezone
+
+from taskmanagement.pydantic_models.email_schema import EmailSchema
 from taskmanagement.pydantic_models.settings import Settings
 from contextlib import asynccontextmanager
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from starlette.responses import JSONResponse
-from taskmanagement.pydantic_models.users_model import TokenData, UserInDB
+from taskmanagement.pydantic_models.users_schema import TokenData, UserInDB
+import pyotp
+
 
 contex_password = CryptContext(schemes=['argon2'], deprecated='auto')
 settings = Settings()
-
-contex_password.hash('Paul09998614418')
+generate_code = pyotp.TOTP(pyotp.random_base32())
 
 class Utility:
     @staticmethod
@@ -132,3 +136,18 @@ class Utility:
             return False
         
         return True
+    
+    
+    @staticmethod
+    async def email_message(message: str, email, subject, subtype):
+        
+        code = generate_code.now()
+        ''
+        schema = MessageSchema(
+                recipients=email,
+                subject=subject,
+                body=message,
+                subtype=subtype
+        )
+    
+        
