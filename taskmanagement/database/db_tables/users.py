@@ -35,7 +35,7 @@ class Users(Base):
     name : str = Column('name', String, nullable=False)
     is_active : int = Column('is_active', Integer, default=False)
     age : int = Column('age', Integer,nullable=False)
-    b_day : date = Column('b_day', Date, nullable=False)
+    b_day : str = Column('b_day', String, nullable=False)
 
     address: Mapped[list['Address']] = relationship('Address',back_populates='user', lazy="selectin")
     
@@ -57,7 +57,7 @@ class Users(Base):
                 'name': self.name,
                 'is_active' : self.is_active,
                 'age': self.age,
-                'b_day' : self.b_day
+                'b_day' : self.b_day,
         }
     
     

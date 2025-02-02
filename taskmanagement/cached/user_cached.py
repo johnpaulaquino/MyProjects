@@ -5,6 +5,7 @@ import asyncio
 import json
 from datetime import date,datetime, timezone, timedelta
 
+from taskmanagement.database.db_operations.users_op import UsersQueries
 from taskmanagement.pydantic_models.users_schema import UserInDB
 
 #This is to create a connection in my local redis
@@ -63,7 +64,7 @@ class RedisUserCached:
             return False
         
         user_data = json.loads(existing_user)  # Convert JSON string back to Python dictionary
-        return existing_user
+        return user_data
     
 
 user_data = {
@@ -71,18 +72,26 @@ user_data = {
         "age" : 30,  # This will be converted to string in the method
         "city": "New York",
         'postal': 4009,
-        'address': {
-                'hey': '123'
-        }
+        'date': date.today().isoformat()
+}
+address = {
+        'postal':12,
+        'city' : 'laguna'
         
 }
-
-email : EmailStr = 'counter@gmail.com'
 async def main():
-    user = await RedisUserCached.get_user_by_email('123')
+    user = await UsersQueries.find_user_by_email('string3')
     print(user)
-    await redis_app.hset('user',  mapping=user_data)
-    print(await redis_app.hgetall('user'))
+    # data = UserInDB(**user)
+    # await RedisUserCached.set_user_data('hey', user)
+    user = await RedisUserCached.get_user_by_email(user['email'])
+    to_json = json.loads(user)
+    print(to_json)
+    
+    # new_user = await RedisUserCached.get_user_by_email(user['email'])
+    # print(new_user)
+    # await redis_app.hset('user',  mapping=user_data)
+    # print(await redis_app.hgetall('user'))
 
 # asyncio.run(RedisUserCached.set_user_data(email,user_data))
 # print(asyncio.run(RedisUserCached.get_user_by_email(email)))
@@ -92,5 +101,6 @@ async def main():
 # print(asyncio.run(redis_app.flushall()))
 # print(asyncio.run(RedisUserCached.set_user_data('123',user_data)))
 # asyncio.run(main())
+# print(asyncio.run(RedisUserCached.get_user_by_email('hey')))
 # print(asyncio.run(RedisUserCached.update_access_token('123', 'toekn', 'faketoken')))
 

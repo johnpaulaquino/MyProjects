@@ -28,3 +28,5 @@ class Settings(BaseSettings):
     VALIDATE_CERTS : bool
     MAIL_PORT : int
     MAIL_SERVER : str
+    MAIL_FROM_NAME: str
+settings = Settings()

@@ -1,15 +1,14 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr
 from datetime import date
 
 # This is the base user
 class BaseUser(BaseModel):
-    email: str
+    email: EmailStr
    
 # inherit the attributes of base user
 class SignUp(BaseUser):
     password: str
     name : str
-    age : int
     b_day : date
 
 class Login(BaseUser):
