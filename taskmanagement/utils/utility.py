@@ -44,7 +44,7 @@ class Utility:
         """
         to_encode = data.copy()
         
-        to_encode.update({'exp': datetime.now(timezone.utc) + timedelta(minutes=1)})
+        to_encode.update({'exp': datetime.now(timezone.utc) + timedelta(minutes=2)})
         token = jwt.encode(
                 to_encode,
                 key=settings.SECRET_KEY,
@@ -262,7 +262,6 @@ class Utility:
         )
         
         await mail.send_message(schema)
-
 
 async def send_utils():
     code = Utility.generate_verification_code()

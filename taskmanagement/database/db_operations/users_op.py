@@ -4,7 +4,7 @@ from taskmanagement.database.db_engine import create_session
 from taskmanagement.database.db_tables.address import Address
 from taskmanagement.database.db_tables.users import Users
 
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, update
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -63,4 +63,26 @@ class UsersQueries:
                 print(f'An error occurred {e}')
                 return False
     
-
+    @staticmethod
+    async def activate_user(email: str ):
+        
+        async with create_session() as db:
+            try:
+                stmt = update(Users).where(and_(Users.email == email))
+                await db.execute(stmt)
+                await db.commit()
+                
+                stmt1 = select(Users).where(and_(Users.email == email))
+                result = await db.execute(stmt1)
+                user = result.scalars().one()
+                
+                if not user:
+                    return False
+                
+                await db.refresh(user)
+                return True
+            except SQLAlchemyError as e:
+                await db.rollback()
+                
+                print(f'An error occurred {e}!')
+                return False

@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status, Response
+from starlette.responses import JSONResponse
 
 from taskmanagement.cached.user_cached import RedisUserCached
 from taskmanagement.database.db_operations.users_op import UsersQueries
@@ -39,7 +40,7 @@ async def user_authenticate(response : Response, form_data : OAuth2PasswordReque
                     headers={'WWW-Authenticate': 'Bearer'}
             )
         
-        await RedisUserCached.set_user_data(user['email'], user)
+        await RedisUserCached.set_user_data(user['email'],user)
         
     #This is to make an access token
     access_token = Utility.generate_access_token(data={
@@ -51,4 +52,7 @@ async def user_authenticate(response : Response, form_data : OAuth2PasswordReque
             key='access_token',
             value=access_token,
     )
-    return {'status' : 'success', 'message' : 'Authentication successfully!'}
+    return JSONResponse(
+            content='Success',
+            headers={'Authorization': access_token}
+    )#{'status' : 'success', 'message' : 'Authentication successfully!'}

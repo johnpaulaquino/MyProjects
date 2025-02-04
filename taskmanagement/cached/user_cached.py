@@ -36,6 +36,21 @@ class RedisUserCached:
         return False
     
     @staticmethod
+    async def set_user_code_verification(code : str, email : str):
+        expiration = timedelta(minutes=5)
+        await redis_app.set(name=f'verify_code:{email}',value=code,ex=int(expiration.total_seconds()))
+        
+    
+    @staticmethod
+    async def get_user_code_verification(email : str):
+        existing_code = await redis_app.get(f'verify_code:{email}')
+        
+        if not existing_code:
+            return False
+        
+        return existing_code
+    
+    @staticmethod
     async def update_access_token(name: str, key : str, token):
         """
         This method is to update the data in the cache
@@ -93,6 +108,10 @@ async def main():
     # await redis_app.hset('user',  mapping=user_data)
     # print(await redis_app.hgetall('user'))
 
+
+# asyncio.run(RedisUserCached.set_user_code_verification('1234', 'hacker2'))
+# print(asyncio.run(RedisUserCached.get_user_code_verification('hacker2')))
+# print(asyncio.run(redis_app.ttl('verify_code:hacker2')))
 # asyncio.run(RedisUserCached.set_user_data(email,user_data))
 # print(asyncio.run(RedisUserCached.get_user_by_email(email)))
 # asyncio.run(redis_app.set('123',value=json.dumps(user_data)))

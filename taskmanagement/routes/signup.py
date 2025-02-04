@@ -1,9 +1,7 @@
-import asyncio
-from datetime import datetime
 from fastapi import (
     APIRouter,
     HTTPException,
-    status, BackgroundTasks, )
+    status, BackgroundTasks, Response, Request)
 from starlette.responses import JSONResponse
 
 from taskmanagement.cached.user_cached import RedisUserCached
@@ -21,7 +19,10 @@ signup = APIRouter(
 
 
 @signup.post('', status_code=201)
-async def create_account(user: SignUp, address: AddressBase):
+async def create_account(user: SignUp,
+                         address: AddressBase,
+                         response : Response,
+                         background_task : BackgroundTasks):
     global new_user
     # Hash the inputted password
     hashed_pass = Utility.hash_user_password(user.password)
@@ -34,14 +35,21 @@ async def create_account(user: SignUp, address: AddressBase):
     
     # check if is not exists in the redis, then it will query in the db
     if existing_user:
-        print('in redis',existing_user)
         if existing_user['is_active']:
             raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail='Email is already exist!'
             )
         else:
-            print('hey')
+            token = Utility.generate_access_token(data={
+                    'email': existing_user['email']
+            })
+            response.set_cookie(key='verify_code_token',
+                                value=token,
+                                samesite='strict',
+                                )
+            code = Utility.generate_verification_code()
+            await RedisUserCached.set_user_code_verification(code, existing_user['email'])
             return JSONResponse(
                 status_code=200,
                 content={'status': 'ok', 'message': 'It seems your email is not verified!'})
@@ -62,6 +70,17 @@ async def create_account(user: SignUp, address: AddressBase):
             #otherwise it will return response that says, It seems your email is not verified!
             #user just to need verify its email.
         else:
+            token = Utility.generate_access_token(
+                    data={
+                            'email': is_user_exist['email']
+                    })
+            response.set_cookie(
+                key='verify_code_token',
+                value=token,
+                samesite='strict',
+                )
+            code = Utility.generate_verification_code()
+            await RedisUserCached.set_user_code_verification(code, is_user_exist['email'])
             return JSONResponse(
                     status_code=200,
                     content={'status': 'ok', 'message': 'It seems your email is not verified!'})
@@ -89,15 +108,65 @@ async def create_account(user: SignUp, address: AddressBase):
             city=address.city,
             country=address.country,
             postal_code=address.postal_code)
-
-    await UsersQueries.create_user_address(user_address)
-
+    
+    token = Utility.generate_access_token(
+            data={
+                    'email': existing_user['email']
+            })
+    response.set_cookie(
+        key='verify_code_token',
+        value=token,
+        samesite='strict',
+        )
+    code = Utility.generate_verification_code()
+    await RedisUserCached.set_user_code_verification(code, existing_user['email'])
     return JSONResponse(
         status_code=201, content={
                 'status': 'success', 'message':
                     'Successfully created account, please verify your account!'
-        })
-
+        },
+    headers={'Authorization' : f'Bearer {token}'})
 
 async def resend_code(email : str):
     pass
+
+
+@signup.post('')
+async def verify_user_email(code : str, request : Request):
+    try:
+        token = request.cookies.get('verify_code_token')
+        
+        if not token:
+            raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail= {'message': 'Please signup first!'}
+            )
+        try:
+            email = await Utility.decode_generated_token(token)
+        except Exception as e:
+            print(f'An error occurred {e}!')
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail={'message': 'Token is expired, please signup again!'}
+            )
+        
+        is_existing_code = await RedisUserCached.get_user_code_verification(email['email'])
+        
+        if not is_existing_code:
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='It seems your verification code is expired, please re-send it!'
+            )
+        if code != is_existing_code:
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='Enter verification code again!'
+            )
+        
+        await UsersQueries.activate_user(email['email'])
+        return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content={'message': 'Account successfully verified, please back to login!'}
+        )
+    except Exception as e:
+        print(f'An error occurred {e}!')
