@@ -68,7 +68,9 @@ class UsersQueries:
         
         async with create_session() as db:
             try:
-                stmt = update(Users).where(and_(Users.email == email))
+                stmt = update(Users).where(and_(Users.email == email)).values(
+                        is_active = 1
+                )
                 await db.execute(stmt)
                 await db.commit()
                 
@@ -80,7 +82,7 @@ class UsersQueries:
                     return False
                 
                 await db.refresh(user)
-                return True
+                return user.to_dict()
             except SQLAlchemyError as e:
                 await db.rollback()
                 

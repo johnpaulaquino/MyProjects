@@ -102,17 +102,19 @@ class Utility:
                         headers={'WWW-Authenticate': 'Bearer'}
                 )
         
-        except JWTError as e:
-            raise e
-        user_data = TokenData(user_id=payload['user_id'], username=payload['username'])
-        if not user_data:
+        except JWTError :
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='Token is expired, please sign up again!'
+            )
+        if not payload:
             raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail='Invalid credentials!',
                     headers={'WWW-Authenticate': 'Bearer'}
             )
         
-        return user_data
+        return payload
     
     @staticmethod
     @asynccontextmanager
@@ -252,28 +254,13 @@ class Utility:
         return True
     
     @staticmethod
-    async def email_message(message: str, email, subject, subtype):
+    async def email_message(message: str, email : list, subject):
         mail = FastMail(config)
         schema = MessageSchema(
                 recipients=email,
                 subject=subject,
                 body=message,
-                subtype=subtype
+                subtype=MessageType.plain
         )
         
         await mail.send_message(schema)
-
-async def send_utils():
-    code = Utility.generate_verification_code()
-    message = f"""
-    This is a sample code to send a code in the email.
-    This is your code
-    {code}
-    """
-    await Utility.email_message(message=message,email=['aquinojohnpaul72@gmail.com'],
-                                subtype=MessageType.plain,subject='This is a sample')
-
-
-
-
-print(asyncio.run(send_utils()))

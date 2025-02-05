@@ -1,5 +1,5 @@
-from pydantic import EmailStr
-from pydantic_core.core_schema import json_schema
+
+from fastapi.encoders import jsonable_encoder
 from redis.asyncio import Redis
 import asyncio
 import json
@@ -87,7 +87,7 @@ user_data = {
         "age" : 30,  # This will be converted to string in the method
         "city": "New York",
         'postal': 4009,
-        'date': date.today().isoformat()
+        'date': date.today(),
 }
 address = {
         'postal':12,
@@ -95,16 +95,13 @@ address = {
         
 }
 async def main():
-    user = await UsersQueries.find_user_by_email('string3')
-    print(user)
-    # data = UserInDB(**user)
-    # await RedisUserCached.set_user_data('hey', user)
-    user = await RedisUserCached.get_user_by_email(user['email'])
-    to_json = json.loads(user)
-    print(to_json)
+    new_data = jsonable_encoder(user_data)
+    await redis_app.hset('hey',mapping=new_data)
+    user = await redis_app.hgetall('hey')
+
     
-    # new_user = await RedisUserCached.get_user_by_email(user['email'])
-    # print(new_user)
+    # # new_user = await RedisUserCached.get_user_by_email(user['email'])
+    # # print(new_user)
     # await redis_app.hset('user',  mapping=user_data)
     # print(await redis_app.hgetall('user'))
 
@@ -112,7 +109,8 @@ async def main():
 # asyncio.run(RedisUserCached.set_user_code_verification('1234', 'hacker2'))
 # print(asyncio.run(RedisUserCached.get_user_code_verification('hacker2')))
 # print(asyncio.run(redis_app.ttl('verify_code:hacker2')))
-# asyncio.run(RedisUserCached.set_user_data(email,user_data))
+# asyncio.run(RedisUserCached.set_user_data('hey',user_data))
+# print(asyncio.run(main()))
 # print(asyncio.run(RedisUserCached.get_user_by_email(email)))
 # asyncio.run(redis_app.set('123',value=json.dumps(user_data)))
 # print(asyncio.run(redis_app.get('123')))
