@@ -121,3 +121,4 @@ async def main():
 # print(asyncio.run(RedisUserCached.get_user_by_email('hey')))
 # print(asyncio.run(RedisUserCached.update_access_token('123', 'toekn', 'faketoken')))
 
+

@@ -22,6 +22,16 @@ class Address(Base):
         self.country = country
         self.postal_code = postal_code
         
+    def to_dict(self) -> dict:
+        return{
+                'user_id': self.user_id,
+                'municipality': self.municipality,
+                'city': self.city,
+                'country' : self.country,
+                'postal_code': self.postal_code
+        }
+        
+        
         
         
     

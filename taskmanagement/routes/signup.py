@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse, ORJSONResponse
 from sqlalchemy.util import await_only
 
 from taskmanagement.cached.user_cached import RedisUserCached
+from taskmanagement.database.db_operations.adress_op import AddressQueries
 from taskmanagement.database.db_operations.users_op import UsersQueries
 from taskmanagement.database.db_tables.address import Address
 from taskmanagement.database.db_tables.users import Users
@@ -90,29 +91,32 @@ async def create_account(
                     b_day=to_str_b_day))
     
     # to store the user credentials in the redis
-    await RedisUserCached.set_user_data(new_user['email'], new_user)
-    
-    user_in_db = UserInDB(**new_user)
     user_address = Address(
-            user_id=user_in_db.id,
+            user_id=new_user['id'],
             municipality=address.municipality,
             city=address.city,
             country=address.country,
             postal_code=address.postal_code)
     
+    
+    address_result = await AddressQueries.add_address(user_address, new_user['id'])
+    del address_result['user_id']
+    user_full_info = new_user.copy()
+    user_full_info.update({'address': address_result})
+    await RedisUserCached.set_user_data(new_user['email'], new_user)
     code = Utility.generate_verification_code()
-    await RedisUserCached.set_user_code_verification(code, user_in_db.email)
+    await RedisUserCached.set_user_code_verification(code, new_user.email)
     
     code_token = Utility.generate_access_token(
             data={
-                    'email': user_in_db.email
+                    'email': new_user['email']
             })
     response.set_cookie(
             key='verify_code_token',
             value=code_token,
             httponly=True)
     response.status_code = 201
-    background_task.add_task(Utility.email_message, code, [user_in_db.email], 'Sample')
+    background_task.add_task(Utility.email_message, code, [new_user['email']], 'Sample')
     return {
                     'status': 'success', 'message':
                         'Please check your email to verify your account!'

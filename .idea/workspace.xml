@@ -7,10 +7,9 @@
     <list default="true" id="da48593d-a2b4-4457-b4d0-a9e4de7333ef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/cached/user_cached.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/cached/user_cached.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_operations/users_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_operations/users_op.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_operations/adress_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_operations/adress_op.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/address.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/address.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/routes/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/signup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/utils/utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/utils/utility.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
