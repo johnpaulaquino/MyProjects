@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship, Mapped
 from datetime import date
 from taskmanagement.database.db_tables.base import Base
 from taskmanagement.database.db_tables.address import Address
+from taskmanagement.database.db_tables.task import Tasks
 
 
 """
@@ -38,7 +39,7 @@ class Users(Base):
     b_day : str = Column('b_day', String, nullable=False)
 
     address: Mapped[list['Address']] = relationship('Address',back_populates='user', lazy="selectin")
-    
+    task : Mapped[list['Tasks']] = relationship('Tasks', back_populates='user',lazy='selectin')
     def __init__(self, email, password, name,age, b_day, **kw):
         self.email = email
         self.name = name

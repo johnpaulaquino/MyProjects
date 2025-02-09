@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
-
 from taskmanagement.utils.utility import Utility
 from taskmanagement.routes.signup import signup
 from taskmanagement.routes.auth import auth
+from taskmanagement.routes.tasks import task_router
+from taskmanagement.utils.middleware import AppMiddleware
 
 description = """
 # 📋 Task Management API
@@ -15,10 +16,10 @@ app = FastAPI(
         lifespan=Utility.lifespan,
         description=description)
 
-
+# app.add_middleware(AppMiddleware)
 app.include_router(signup)
 app.include_router(auth)
-
+app.include_router(task_router)
 
 
 

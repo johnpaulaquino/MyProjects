@@ -69,7 +69,8 @@ async def create_account(
             await RedisUserCached.set_user_code_verification(code, is_user_exist['email'])
             token = Utility.generate_access_token(
                     data={
-                            'email': is_user_exist['email']
+                            'email': is_user_exist['email'],
+                            'id' : is_user_exist['id']
                     })
             
             response.set_cookie(
@@ -98,14 +99,14 @@ async def create_account(
             country=address.country,
             postal_code=address.postal_code)
     
-    
+    print('hey')
     address_result = await AddressQueries.add_address(user_address, new_user['id'])
     del address_result['user_id']
     user_full_info = new_user.copy()
     user_full_info.update({'address': address_result})
     await RedisUserCached.set_user_data(new_user['email'], new_user)
     code = Utility.generate_verification_code()
-    await RedisUserCached.set_user_code_verification(code, new_user.email)
+    await RedisUserCached.set_user_code_verification(code, new_user['email'])
     
     code_token = Utility.generate_access_token(
             data={
@@ -163,7 +164,7 @@ async def verify_user_email(code: str, request: Request):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='It seems your verification code is expired, please re-send it!'
         )
-    if await RedisUserCached.get_user_code_verification(is_existing_code['email']):
+    if Utility.verify_code(is_existing_code):
         raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Enter verification code again!'

@@ -24,6 +24,14 @@ async def user_authenticate(response: Response, form_data: OAuth2PasswordRequest
     user = await RedisUserCached.get_user_by_email(form_data.username)
     if not user:
         user = await UsersQueries.find_user_by_email(form_data.username)
+        
+        if not user['is_active']:
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='It seems you email is not verified. Please verified first!',
+                    headers={'WWW-Authenticate': 'Bearer'}
+            )
+        
         if not user:
             raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -37,9 +45,9 @@ async def user_authenticate(response: Response, form_data: OAuth2PasswordRequest
                     detail='Incorrect password, please try again',
                     headers={'WWW-Authenticate': 'Bearer'}
             )
-        
-        await RedisUserCached.set_user_data(user['email'], user)
     
+        await RedisUserCached.set_user_data(user['email'], user)
+        
     if not user['is_active']:
         raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

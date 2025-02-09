@@ -5,9 +5,6 @@ import asyncio
 import json
 from datetime import date,datetime, timezone, timedelta
 
-from taskmanagement.database.db_operations.users_op import UsersQueries
-from taskmanagement.pydantic_models.users_schema import UserInDB
-
 #This is to create a connection in my local redis
 redis_app = Redis(
         host='127.0.0.1', #This is the localhost and it is default.
@@ -47,6 +44,7 @@ class RedisUserCached:
         
         if not existing_code:
             return False
+    
         
         return existing_code
     
@@ -117,7 +115,7 @@ async def main():
 # print(asyncio.run(redis_app.ping()))
 # print(asyncio.run(redis_app.flushall()))
 # print(asyncio.run(RedisUserCached.set_user_data('123',user_data)))
-# asyncio.run(main())
+# print(asyncio.run(RedisUserCached.get_user_code_verification('pauljohn.app2024@gmail.com')))
 # print(asyncio.run(RedisUserCached.get_user_by_email('hey')))
 # print(asyncio.run(RedisUserCached.update_access_token('123', 'toekn', 'faketoken')))
 
