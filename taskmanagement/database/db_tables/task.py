@@ -2,6 +2,7 @@ from sqlalchemy.orm import Mapped, relationship
 
 from taskmanagement.database.db_tables.base import Base
 from sqlalchemy import Column, ForeignKey, String
+from taskmanagement.database.db_tables.users import Users
 
 
 class Tasks(Base):
@@ -12,7 +13,7 @@ class Tasks(Base):
     # status contains pending, in-progress and complete
     status: str = Column('status', String, default='pending')
     user_id: str = Column('user_id', String, ForeignKey('users.id'))
-    user: Mapped['Users'] = relationship('Users', back_populates='task', lazy="selectin")
+    user = relationship('Users', back_populates='task', lazy="selectin")
     
     def __init__(self, title, description, user_id, **kw):
         self.title = title

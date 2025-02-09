@@ -10,8 +10,9 @@ from taskmanagement.utils.utility import Utility
 auth = APIRouter(prefix='/auth')
 
 
-@auth.post('')
-async def user_authenticate(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), ):
+@auth.post('', status_code=status.HTTP_200_OK)
+async def user_authenticate(response: Response,
+                            form_data: OAuth2PasswordRequestForm = Depends(), ):
     """
     This method is for authentication of the user to get access in the data.
     :param response:
@@ -65,7 +66,7 @@ async def user_authenticate(response: Response, form_data: OAuth2PasswordRequest
             key='access_token',
             value=access_token,
     )
-    return JSONResponse(
-            status_code= 200,
-            content='Success'
-    )
+    return {
+            'status': 'ok',
+            "message" : 'Success'
+    }

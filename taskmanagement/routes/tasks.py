@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Request
-from fastapi.params import Depends
+
+
+from fastapi import APIRouter, Request, HTTPException,Depends, status
+
 
 from taskmanagement.database.db_operations.tasks_op import TasksOperations
 from taskmanagement.pydantic_models.task_schema import UserTask
@@ -16,14 +18,23 @@ task_router = APIRouter(
 #Add task
 @task_router.post('/create-task')
 async def create_user_task(task : UserTask,
-                           user_data : dict =  Depends(Dependencies.get_access_token)):
-    
+                           user_data =  Depends(Dependencies.get_access_token)):
     try:
-        
-        user_task = Tasks(user_id=user_data['id'],
+
+        user_task = Tasks(user_id=user_data['user_id'],
                           title=task.title,
                           description=task.description)
-        result = TasksOperations.create_user_tasks(user_task)
-        return {'user_task' : result}
+
+        result = await TasksOperations.create_user_tasks(user_task)
+        if not result:
+            raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='Failed to create user task!'
+            )
+        return {'status' : 'ok',
+        'message' : 'success'}
     except Exception as e:
-        print(f'An error occurred {e}!')
+        raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'An Error occurred: {e}'
+        )

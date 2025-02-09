@@ -34,7 +34,7 @@ class RedisUserCached:
     
     @staticmethod
     async def set_user_code_verification(code : str, email : str):
-        expiration = timedelta(minutes=5)
+        expiration = timedelta(minutes=1)
         await redis_app.set(name=f'verify_code:{email}',value=code,ex=int(expiration.total_seconds()))
         
     

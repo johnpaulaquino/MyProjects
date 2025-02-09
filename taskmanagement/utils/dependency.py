@@ -40,11 +40,11 @@ class Dependencies:
                     detail='Missing auth token, please login again!')
         try:
             payload = Utility.decode_generated_token(access_token)
-            
             if not payload:
                 raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail='Failed to retrieve the token'
+                        detail='Invalid credentials!',
+                        headers={'WWW-Authenticate': 'Bearer'}
                 )
             return payload
         except Exception as e:

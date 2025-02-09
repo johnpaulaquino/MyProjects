@@ -1,3 +1,5 @@
+import asyncio
+
 from taskmanagement.database.db_engine import create_session
 from taskmanagement.database.db_tables.task import Tasks
 from sqlalchemy import select, and_
@@ -8,22 +10,20 @@ from sqlalchemy import select, and_
 
 class TasksOperations:
     @staticmethod
-    async def create_user_tasks(task : Tasks):
-        async with create_session() as session:
+    async def create_user_tasks(user_task : Tasks):
+        async with create_session() as db:
             try:
-                await session.add(task)
-                await session.commit()
-                await session.refresh(task)
-                
-                stmt = select(Tasks).where(and_(Tasks.user_id == task.user_id))
-                result = await session.execute(stmt)
-                user_tasks = result.scalars().all()
-                
-                if not user_tasks:
-                    return False
-                
-                return user_tasks
+                db.add(user_task)
+                await db.commit()
+                await db.refresh(user_task)
+                return True
             except Exception as e:
-                await session.rolback()
+                await db.rollback()
                 print(f'An error occurred {e}!')
+                return False
 
+print(asyncio.run(TasksOperations.create_user_tasks(
+        Tasks(user_id='b63ecb97-edf5-478f-9575-c2108f121a4a',
+              description='hhey',
+              title='bugok')
+)))

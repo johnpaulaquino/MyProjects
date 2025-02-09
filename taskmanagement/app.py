@@ -16,7 +16,7 @@ app = FastAPI(
         lifespan=Utility.lifespan,
         description=description)
 
-# app.add_middleware(AppMiddleware)
+app.add_middleware(AppMiddleware)
 app.include_router(signup)
 app.include_router(auth)
 app.include_router(task_router)

@@ -164,7 +164,7 @@ async def verify_user_email(code: str, request: Request):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='It seems your verification code is expired, please re-send it!'
         )
-    if Utility.verify_code(is_existing_code):
+    if Utility.verify_code(code):
         raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Enter verification code again!'
