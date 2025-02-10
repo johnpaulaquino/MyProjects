@@ -15,10 +15,11 @@ class Tasks(Base):
     user_id: str = Column('user_id', String, ForeignKey('users.id'))
     user = relationship('Users', back_populates='task', lazy="selectin")
     
-    def __init__(self, title, description, user_id, **kw):
+    def __init__(self, title, description, user_id, status = 'pending', **kw):
         self.title = title
         self.description = description
         self.user_id = user_id
+        self.status = status
         super().__init__(**kw)
     
     def to_dict(self) -> dict:

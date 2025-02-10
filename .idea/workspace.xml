@@ -6,14 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="da48593d-a2b4-4457-b4d0-a9e4de7333ef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/cached/user_cached.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/cached/user_cached.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_operations/tasks_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_operations/tasks_op.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/database/db_tables/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/database/db_tables/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/pydantic_models/task_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/pydantic_models/task_schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/routes/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/signup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/routes/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/routes/tasks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taskmanagement/utils/dependency.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/utils/dependency.py" afterDir="false" />
     </list>

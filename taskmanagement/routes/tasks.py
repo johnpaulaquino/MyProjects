@@ -20,7 +20,10 @@ task_router = APIRouter(
 async def create_user_task(task : UserTask,
                            user_data =  Depends(Dependencies.get_access_token)):
     try:
-
+        
+        
+        if not user_data:
+            raise
         user_task = Tasks(user_id=user_data['user_id'],
                           title=task.title,
                           description=task.description)
@@ -34,7 +37,4 @@ async def create_user_task(task : UserTask,
         return {'status' : 'ok',
         'message' : 'success'}
     except Exception as e:
-        raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f'An Error occurred: {e}'
-        )
+        raise e

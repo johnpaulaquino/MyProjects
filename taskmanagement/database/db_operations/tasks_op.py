@@ -1,11 +1,10 @@
-import asyncio
+
 
 from taskmanagement.database.db_engine import create_session
 from taskmanagement.database.db_tables.task import Tasks
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, update
 
-
-
+from taskmanagement.utils.utility import Utility
 
 
 class TasksOperations:
@@ -21,9 +20,28 @@ class TasksOperations:
                 await db.rollback()
                 print(f'An error occurred {e}!')
                 return False
+    
+    
+    @staticmethod
+    async def update_user_task(task_id,task : Tasks):
+        async with create_session() as db :
+            try:
+                stmt = update(Tasks).where(and_(Tasks.id == task_id)).values(
+                title = task.title, description = task.description, status = task.status
+                )
+                
+                await db.execute(stmt)
+                await db.commit()
+                
+                
+                
+                return True
+            except Exception as e:
+                await db.rollback()
+                print(f'An error occurred {e}!')
+                return False
+        
 
-print(asyncio.run(TasksOperations.create_user_tasks(
-        Tasks(user_id='b63ecb97-edf5-478f-9575-c2108f121a4a',
-              description='hhey',
-              title='bugok')
-)))
+
+
+# print(Utility.decode_generated_token('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBhdWxqb2huLmFwcDIwMjRAZ21haWwuY29tIiwiZXhwIjoxNzM5MTcxMDI3fQ.siMEDTASUsJzpCg1HP6MlSlckA_eII-P6F3bby-AwbQ'))
