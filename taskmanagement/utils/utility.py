@@ -105,7 +105,7 @@ class Utility:
         except JWTError :
             raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail='Token is expired, please sign up again!'
+                    detail='Token is expired, please sign in again!'
             )
         if not payload:
             raise HTTPException(
