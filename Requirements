@@ -1,0 +1,7 @@
+SQLAlchemy
+fastapi[standard]
+pydantic-settings
+asyncpg
+python-jose[cryptography]
+passlib[argon2]
+python-dotenv
