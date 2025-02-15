@@ -70,7 +70,7 @@ async def delete_user_task(task_id, user_data = Depends(Dependencies.get_access_
         
         user_id = user_data['user_id']
         await TasksOperations.delete_user_task(task_id, user_id)
-        
+        print('sample')
         return {'status': 'ok',
         'message': 'Successfully deleted task!'}
     except Exception as e:
