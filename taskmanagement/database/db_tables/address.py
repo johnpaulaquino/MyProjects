@@ -30,7 +30,7 @@ class Address(Base):
                 'country' : self.country,
                 'postal_code': self.postal_code
         }
-        
+print('hey')
         
         
         
