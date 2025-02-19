@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-
+print('hey')
 
 
 signup = APIRouter(
