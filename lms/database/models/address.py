@@ -1,4 +1,4 @@
-from lms.database.db_tables.base import Base
+from lms.database.models.base import Base
 from sqlalchemy import Column, String, ForeignKey, Integer
 
 from lms.utils.utils import Utility
