@@ -4,7 +4,7 @@ import uvicorn
 from lms.config.settings import Settings
 from lms.routes.signup import signup
 
-from lms.utils.utils import Utility
+from lms.utils.app_utils import AppUtility
 
 settings = Settings()
 
@@ -16,7 +16,7 @@ app = FastAPI(
         title=title,
         description=description,
         version='1.0',
-        lifespan=Utility.create_lifespan
+        lifespan=AppUtility.create_lifespan
 )
 
 app.include_router(signup)

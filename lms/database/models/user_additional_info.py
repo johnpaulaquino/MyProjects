@@ -1,11 +1,6 @@
 from datetime import datetime, date
-
-from fastapi.encoders import jsonable_encoder
-
 from lms.database.models.base import Base
 from sqlalchemy import Column, String, Integer, Date, ForeignKey
-
-from lms.utils.utils import Utility
 
 
 class UserAdditionalInfo(Base):

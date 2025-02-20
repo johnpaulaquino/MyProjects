@@ -1,11 +1,8 @@
 
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import select, and_
-from fastapi import HTTPException
+from sqlalchemy import select , and_ , update
 from lms.database.db_engine.engine import create_session
 from lms.database.models.users import Users
-
-import asyncio
 
 class UserRepository:
     
@@ -39,3 +36,17 @@ class UserRepository:
             except SQLAlchemyError as e :
                 print(f'An error occurred {e}')
                 return False
+            
+            
+    @staticmethod
+    async def activate_user_account(email : str):
+        async with create_session() as db :
+            try:
+                stmt = update(Users).where(and_(Users.email == email)).values(status = 1)
+                await db.execute(stmt)
+                await db.commit()
+                
+                
+            except SQLAlchemyError as e:
+                print(f'An error occurred {e}')
+                await db.rollback()

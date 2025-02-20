@@ -1,9 +1,6 @@
 from lms.database.models.base import Base
 from sqlalchemy import Column, String, ForeignKey, Integer
 
-from lms.utils.utils import Utility
-
-
 class Address(Base):
     __tablename__ = 'address'
     

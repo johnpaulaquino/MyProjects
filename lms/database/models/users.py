@@ -1,13 +1,12 @@
 from lms.database.models.base import Base
 from sqlalchemy import Column , String , Integer, TIMESTAMP, func
-from datetime import date
-from lms.utils.utils import Utility
+from lms.utils.generator_utils import GeneratorUtils
 
 
 class Users(Base):
     __tablename__ = 'users'
     
-    id: str = Column('id' , String , primary_key = True , default = Utility.generate_uuid)
+    id: str = Column('id' , String , primary_key = True , default = GeneratorUtils.generate_uuid)
     firstname: str = Column('firstname' , String , nullable = False)
     middle_name: str = Column('middle_name' , String , nullable = False)
     lastname: str = Column('lastname' , String , nullable = False)

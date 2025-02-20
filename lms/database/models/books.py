@@ -1,10 +1,7 @@
 from lms.database.models.base import Base
 from sqlalchemy import Column, String, Integer
-from sqlalchemy.orm import DeclarativeBase, Mapped
+from sqlalchemy.orm import  Mapped
 
-from lms.utils.utils import Utility
-
-    
 class Books(Base):
     __tablename__ = 'books'
     id: Mapped[int] = Column('id', Integer, primary_key=True, autoincrement=True, unique=True)

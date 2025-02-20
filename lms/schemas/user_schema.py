@@ -3,9 +3,6 @@ from pydantic import (
     EmailStr ,
 )
 
-from enum import Enum
-
-
 class BaseUserSchema(BaseModel) :
     firstname: str = 'John'
     middle_name: str = 'Chicago'

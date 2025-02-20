@@ -2,8 +2,6 @@ from lms.database.models.base import Base
 
 from sqlalchemy import Column, String, Date,ForeignKey, Integer
 from datetime import date
-from lms.utils.utils import Utility
-
 
 class BooksTransactions(Base):
     __tablename__ = 'book_transactions'
