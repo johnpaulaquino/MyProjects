@@ -12,7 +12,6 @@ signup = APIRouter(
 @signup.post('/', status_code = status.HTTP_200_OK)
 async def create_user_account(user_cred: UserSchemaSignup, background_task : BackgroundTasks) :
     try:
-        
         return await AuthServices.create_user_account(user_cred, background_task)
     except Exception as e:
         raise e

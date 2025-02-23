@@ -17,7 +17,7 @@ class GeneratorUtils:
     
    
     def verify_code_verification(self, code):
-        code_generator = pyotp.TOTP(self.__SECRET_KEY , interval = 360)
+        code_generator = pyotp.TOTP(self.__SECRET_KEY , interval =  self.__INTERVAL)
         return code_generator.verify(code, valid_window = 5)
     
     def get_interval(self) :

@@ -13,10 +13,9 @@ class UserRepository:
                 db.add(user)
                 await db.commit()
                 await db.refresh(user)
-                
-                return True
+                curr_user = await UserRepository.find_user_by_email(user.email)
+                return curr_user
             except SQLAlchemyError as e:
-                
                 print(f'An error occurred {e}!')
                 await db.rollback()
                 return False
@@ -50,3 +49,19 @@ class UserRepository:
             except SQLAlchemyError as e:
                 print(f'An error occurred {e}')
                 await db.rollback()
+    
+    @staticmethod
+    async def find_user_by_user_id(user_id: str) :
+        async with create_session() as db :
+            try :
+                stmt = select(Users).where(and_(Users.id == user_id))
+                result = await db.execute(stmt)
+                data = result.scalars().one()
+                
+                if not data :
+                    return False
+                
+                return data.to_dict()
+            except SQLAlchemyError as e :
+                print(f'An error occurred {e}')
+                return False

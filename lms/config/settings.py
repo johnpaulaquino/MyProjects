@@ -9,6 +9,11 @@ class Settings(BaseSettings):
     DB_URL : str
     PORT : int
     
+    #For JWT
+    JWT_ALGORITHM : str
+    JWT_REFRESH_ACCESS_KEY: int
+    JWT_KEY : str
+    
     MAIL_PASSWORD: SecretStr
     MAIL_FROM: EmailStr
     MAIL_PORT : int
