@@ -158,8 +158,3 @@ class AuthServices :
         except Exception as e :
             print(f'An error occurred {e}')
             raise e
-
-
-    @staticmethod
-    async def user_authenticate(self):
-        pass

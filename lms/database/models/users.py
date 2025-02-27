@@ -13,6 +13,7 @@ class Users(Base) :
     email: str = Column('email' , String , unique = True)
     password: str = Column('password' , String , nullable = False)
     status: int = Column('status' , Integer , default = 0)
+    role: str = Column('role', String, default = 'member')
     created_at = Column('created_at' , TIMESTAMP , server_default = func.now())
     
     def __init__(
@@ -22,6 +23,7 @@ class Users(Base) :
             email ,
             password ,
             status = 0 ,
+            role = 'member',
             **kw) :
         self.firstname = firstname
         self.middle_name = middle_name
@@ -29,6 +31,7 @@ class Users(Base) :
         self.email = email
         self.password = password
         self.status = status
+        self.role = role
         super().__init__(**kw)
     
     def to_dict(self) -> dict :
@@ -39,5 +42,6 @@ class Users(Base) :
                 lastname = self.lastname ,
                 email = self.email ,
                 hash_password = self.password ,
-                status = self.status
+                status = self.status,
+                role = self.role
         )

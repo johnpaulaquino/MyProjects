@@ -10,7 +10,8 @@ login = APIRouter(
         prefix = '/auth'
 )
 
-@login.post('/token', status_code = status.HTTP_200_OK)
+
+@login.post('/token' , status_code = status.HTTP_200_OK)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) :
     try :
         user_cred = await UserRepository.find_user_by_email(form_data.username)
@@ -20,25 +21,22 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
                     detail = 'Username not found!' ,
                     headers = {'WWW-Authenticate' : 'Bearer'}
             )
-        if not AuthUtility.authenticate_user(user_cred, form_data.password) :
+        if not AuthUtility.authenticate_user(user_cred , form_data.password) :
             raise HTTPException(
                     status_code = status.HTTP_401_UNAUTHORIZED ,
                     detail = 'Incorrect Password!' ,
                     headers = {'WWW-Authenticate' : 'Bearer'}
             )
+        
         user_id = user_cred['id']
-        access_token = AuthUtility.generate_access_token({'user_id' : user_id})
+        role = user_cred['role']
+        
+        access_token = AuthUtility.generate_access_token(
+                {'user_id'   : user_id ,
+                 'user_role' : role})
+        
         return {'access_token' : access_token ,
                 'access_type'  : 'bearer'}
     except Exception as e :
-        print(f'An error occurred {e}')
-        raise e
-    
-
-@login.get('/get-current_user', status_code = status.HTTP_200_OK)
-async def get_current_user(curr_user  = Depends(Dependencies.get_current_user)):
-    try:
-        return {'user': curr_user}
-    except Exception as e:
         print(f'An error occurred {e}')
         raise e
