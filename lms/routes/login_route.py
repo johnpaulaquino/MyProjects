@@ -3,7 +3,6 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
 from lms.database.db_repository.user_repo import UserRepository
 from lms.utils.auth_utils import AuthUtility
-from lms.utils.dependencies import Dependencies
 
 login = APIRouter(
         tags = ['Authentication'] ,
