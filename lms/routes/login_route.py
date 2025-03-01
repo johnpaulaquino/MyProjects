@@ -14,6 +14,7 @@ login = APIRouter(
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) :
     try :
         user_cred = await UserRepository.find_user_by_email(form_data.username)
+        print(user_cred)
         if not user_cred :
             raise HTTPException(
                     status_code = status.HTTP_401_UNAUTHORIZED ,

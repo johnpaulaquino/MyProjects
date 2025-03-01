@@ -52,8 +52,10 @@ class AuthServices :
                     firstname = user_cred.firstname ,
                     middle_name = user_cred.middle_name ,
                     lastname = user_cred.lastname ,
-                    email = user_cred.email ,
+                    email = user_cred.email,
+                    role = user_cred.role,
                     password = AuthUtility.hash_plain_password(user_cred.password)
+                    
             )
             
             new_user = await UserRepository.create_user(user)

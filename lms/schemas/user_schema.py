@@ -8,7 +8,7 @@ class BaseUserSchema(BaseModel) :
     middle_name: str = 'Chicago'
     lastname: str = 'Doe'
     email: EmailStr
-    role: str = 'user'
+    role : str = 'member'
 
 
 class UserSchemaSignup(BaseUserSchema) :
