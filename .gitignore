@@ -1,0 +1,9 @@
+# Compiled files
+*.class
+# IDE files
+.idea/
+.vscode/
+
+# OS-specific files
+.DS_Store  # macOS
+Thumbs.db  # Windows
