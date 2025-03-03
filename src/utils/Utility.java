@@ -109,14 +109,13 @@ public class Utility {
             String totalTimeRendered,
             int resultSet){
         DefaultTableModel dft = (DefaultTableModel) tableName.getModel();
+        
         String addressStation = address + " " + station;
-        int i = 0;
-        while (i <= resultSet) {            
             dft.addRow(new Object[]{
             studentId, studentName, addressStation, totalTimeRendered
             });
-            i++;
-        }
+
+       
     }
     
     public static void main(String[] args) {

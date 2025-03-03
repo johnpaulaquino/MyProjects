@@ -1,5 +1,10 @@
 
+import java.sql.ResultSet;
 import database.StudentsRepository;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import utils.Utility;
 
 /*
@@ -13,6 +18,7 @@ import utils.Utility;
  */
 public class Tlobby extends javax.swing.JFrame {
 private Utility utils = new Utility();
+private StudentsRepository repo = new StudentsRepository();
     public Tlobby() {
         initComponents();
         
@@ -37,6 +43,9 @@ private Utility utils = new Utility();
         jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         sv2 = new javax.swing.JButton();
+        jPopMenu = new javax.swing.JPopupMenu();
+        deleteStudent = new javax.swing.JMenuItem();
+        studentInfo = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -177,6 +186,16 @@ private Utility utils = new Utility();
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
+
+        deleteStudent.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        deleteStudent.setText("DELETE");
+        deleteStudent.setToolTipText("");
+        jPopMenu.add(deleteStudent);
+        deleteStudent.getAccessibleContext().setAccessibleName("Menu2");
+
+        studentInfo.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        studentInfo.setText("ACCOUNT");
+        jPopMenu.add(studentInfo);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -367,6 +386,14 @@ private Utility utils = new Utility();
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tbIctHope.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tbIctHopeMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tbIctHopeMouseReleased(evt);
             }
         });
         test1.setViewportView(tbIctHope);
@@ -627,8 +654,6 @@ private Utility utils = new Utility();
             .addComponent(studentInfoTab)
         );
 
-        studentInfoTab.getAccessibleContext().setAccessibleParent(pIctHope);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -692,8 +717,8 @@ private Utility utils = new Utility();
     }//GEN-LAST:event_test1MouseClicked
 
     private void studentInfoTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_studentInfoTabStateChanged
-        int slectedIndex = studentInfoTab.getSelectedIndex();
-        String title = studentInfoTab.getTitleAt(slectedIndex);
+        int selectedIndex = studentInfoTab.getSelectedIndex();
+        String title = studentInfoTab.getTitleAt(selectedIndex);
         
         String slicedTitleTab [] = title.split(" ");
         
@@ -701,13 +726,61 @@ private Utility utils = new Utility();
         int yearLevel = Integer.parseInt(slicedTitleTab[1]);
         String section = slicedTitleTab[2];
         
-        if(slectedIndex == 0){
-            utils.setValueInTable(tbIctHope, strand, section, strand, section, strand, 5);
+        int count = repo.countValues(strand, section, yearLevel);
+        
+        
+            Map<Integer, JTable> tableMap = new HashMap<>();
+            tableMap.put(0, tbIctHope);
+            tableMap.put(1, tbIctLove);
+            tableMap.put(2, tbHumssHope);
+            tableMap.put(3, tbHumssLove);
+            tableMap.put(4, tbHumssFaith);
+            tableMap.put(5, tbAbmLove);
+            tableMap.put(6, tbStemHope);
+        try {
+            ResultSet rs = repo.getStudentsRecords(strand, yearLevel, section);
+            DefaultTableModel dft = (DefaultTableModel)  tableMap.get(selectedIndex).getModel();
+            dft.setRowCount(0);
+            while (rs.next()) {                
+                 utils.setValueInTable(
+                         tableMap.get(selectedIndex), 
+                         rs.getString("student_id"), 
+                         rs.getString("student_name"), 
+                         rs.getString("address"),
+                         rs.getString("station"), 
+                         section, 
+                         count);
+            }
+
+
+        } catch (Exception e) {
+        } finally {
         }
+
+        
         
         
         
     }//GEN-LAST:event_studentInfoTabStateChanged
+
+    private void tbIctHopeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbIctHopeMouseReleased
+    
+        
+    }//GEN-LAST:event_tbIctHopeMouseReleased
+
+    private void tbIctHopeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbIctHopeMousePressed
+           if (evt.isPopupTrigger()) {
+        int row = tbIctHope.rowAtPoint(evt.getPoint());
+        if (row >= 0) {
+            tbIctHope.setRowSelectionInterval(row, row);
+        }
+        jPopMenu.show(evt.getComponent(), evt.getX(), evt.getY()); 
+           }
+        int selectedRow = tbIctHope.getSelectedRow();
+        
+        System.out.println(tbIctHope.getValueAt(selectedRow, 0));
+        
+    }//GEN-LAST:event_tbIctHopeMousePressed
 
     /**
      * @param args the command line arguments
@@ -749,6 +822,7 @@ private Utility utils = new Utility();
     private javax.swing.JPanel Srecords;
     private javax.swing.JButton addstudent;
     private javax.swing.JButton barcode;
+    private javax.swing.JMenuItem deleteStudent;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -766,6 +840,7 @@ private Utility utils = new Utility();
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPopupMenu jPopMenu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -781,6 +856,7 @@ private Utility utils = new Utility();
     private javax.swing.JPanel pIctHope;
     private javax.swing.JPanel pIctLove;
     private javax.swing.JPanel pStemHope;
+    private javax.swing.JMenuItem studentInfo;
     private javax.swing.JTabbedPane studentInfoTab;
     private javax.swing.JButton sv2;
     private javax.swing.JTable tbAbmLove;

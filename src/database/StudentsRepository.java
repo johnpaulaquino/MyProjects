@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import database.Connector;
+
 import java.util.UUID;
 
 /**
@@ -20,7 +20,7 @@ public class StudentsRepository {
     private Connection conn;
 
     public StudentsRepository() {
-        conn = (new Connector().myConn());
+        conn = new Connector().myConn();
 
     }
 
@@ -122,22 +122,23 @@ public class StudentsRepository {
         PreparedStatement ps1;
         ResultSet rs;
         String stmt1 = "SELECT s.id, s.student_id, s.student_name,"
-                + "s.year_level, s.section, s.strand,a.contact_no, a.address "
+                + "s.year_level, s.section, s.strand,a.contact_no, a.address, "
                 + "a.station "
                 + "FROM students as s "
                 + "INNER JOIN add_info as a "
                 + "ON s.id = a.students_id "
-                + "WHERE "
-                + "s.year_level = ?"
+                + "WHERE s.year_level = ? "
                 + "AND s.section = ? "
                 + "AND s.strand = ?";
         try {
             ps1 = this.conn.prepareStatement(stmt1);
+            
             ps1.setInt(1, yearLevel);
             ps1.setString(2, section);
             ps1.setString(3, strand);
-            rs = ps1.executeQuery();
             
+            rs = ps1.executeQuery();
+  
             return rs;
             
         } catch (SQLException e) {
@@ -154,16 +155,30 @@ public class StudentsRepository {
             e.printStackTrace();
         }
       }
-     
+     public int countValues(String strand, String section, int yearLevel){
+         PreparedStatement ps ;
+         ResultSet rs;     
+         String stmt = "Select count(id) FROM students "
+                 + "WHERE year_level = ? and section = ? and strand = ?";
+         int count = 0;
+         try {
+             ps = this.conn.prepareStatement(stmt);
+             ps.setInt(1, yearLevel);
+             ps.setString(2, section);
+             ps.setString(3, strand);
+             rs = ps.executeQuery();
+             if (rs.next()){
+                 count = rs.getInt("count(id)");
+                 return count;
+             }
+         } catch (SQLException e) {
+         } finally {
+         }
+         
+         return 1;
+     }
     public static void main(String[] args) {
         StudentsRepository std = new StudentsRepository();
-//       
-//        try {
-//                   std.addStudents(123, "Paul", 12, "HoPE", "ICT", 1223456, "asdsad", "ASDs");
-//
-//        } catch (Exception e) {
-//        } finally {
-//        }
 
 
     }
