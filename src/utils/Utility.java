@@ -5,14 +5,19 @@
 package utils;
 
 import com.mysql.cj.protocol.Resultset;
+import database.StudentsRepository;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.sourceforge.barbecue.Barcode;
@@ -112,10 +117,62 @@ public class Utility {
         
         String addressStation = address + " " + station;
             dft.addRow(new Object[]{
-            studentId, studentName, addressStation, totalTimeRendered
-            });
+            studentId, studentName, addressStation, totalTimeRendered});
 
        
+    }
+    
+    public void refreshTable(
+            JTabbedPane studentInfoTab,
+            StudentsRepository repo,
+            JTable tbIctHope,
+            JTable tbIctLove,
+            JTable tbHumssHope,
+            JTable tbHumssLove,
+            JTable tbHumssFaith,
+            JTable tbAbmLove,
+            JTable tbStemHope
+    ){
+        
+      int selectedIndex = studentInfoTab.getSelectedIndex();
+        String title = studentInfoTab.getTitleAt(selectedIndex);
+        
+        String slicedTitleTab [] = title.split(" ");
+        
+        String strand = slicedTitleTab[0];
+        int yearLevel = Integer.parseInt(slicedTitleTab[1]);
+        String section = slicedTitleTab[2];
+        
+        int count = repo.countValues(strand, section, yearLevel);
+        
+        
+            Map<Integer, JTable> tableMap = new HashMap<>();
+            tableMap.put(0, tbIctHope);
+            tableMap.put(1, tbIctLove);
+            tableMap.put(2, tbHumssHope);
+            tableMap.put(3, tbHumssLove);
+            tableMap.put(4, tbHumssFaith);
+            tableMap.put(5, tbAbmLove);
+            tableMap.put(6, tbStemHope);
+        try {
+            ResultSet rs = repo.getStudentsRecords(strand, yearLevel, section);
+            DefaultTableModel dft = (DefaultTableModel) tableMap.get(selectedIndex).getModel();
+            dft.setRowCount(0);
+            while (rs.next()) {                
+                 this.setValueInTable(
+                         tableMap.get(selectedIndex), 
+                         rs.getString("student_id"), 
+                         rs.getString("student_name"), 
+                         rs.getString("address"),
+                         rs.getString("station"), 
+                         section, 
+                         count);
+            }
+
+
+        } catch (Exception e) {
+        } finally {
+        }
     }
     
     public static void main(String[] args) {

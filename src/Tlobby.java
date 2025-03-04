@@ -3,6 +3,7 @@ import java.sql.ResultSet;
 import database.StudentsRepository;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import utils.Utility;
@@ -33,16 +34,6 @@ private StudentsRepository repo = new StudentsRepository();
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Srecords = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jPanel14 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        sv2 = new javax.swing.JButton();
         jPopMenu = new javax.swing.JPopupMenu();
         deleteStudent = new javax.swing.JMenuItem();
         studentInfo = new javax.swing.JMenuItem();
@@ -82,114 +73,25 @@ private StudentsRepository repo = new StudentsRepository();
         pStemHope = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
         tbStemHope = new javax.swing.JTable();
-
-        Srecords.setBackground(new java.awt.Color(232, 233, 215));
-
-        jLabel6.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel6.setText("STUDENT RECORDS");
-
-        jPanel14.setBackground(new java.awt.Color(117, 117, 117));
-        jPanel14.setPreferredSize(new java.awt.Dimension(0, 3));
-
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 5, Short.MAX_VALUE)
-        );
-
-        jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "DATE", "TIME IN", "TIME OUT"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jLabel9.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel9.setText("Name:");
-
-        jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel8.setText("Student ID:");
-
-        jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel10.setText("Grade / Section:");
-
-        sv2.setBackground(new java.awt.Color(0, 102, 51));
-        sv2.setForeground(new java.awt.Color(255, 255, 255));
-        sv2.setText("EXIT");
-        sv2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sv2ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout SrecordsLayout = new javax.swing.GroupLayout(Srecords);
-        Srecords.setLayout(SrecordsLayout);
-        SrecordsLayout.setHorizontalGroup(
-            SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SrecordsLayout.createSequentialGroup()
-                .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(SrecordsLayout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel6))
-                    .addGroup(SrecordsLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(sv2, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SrecordsLayout.createSequentialGroup()
-                .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(SrecordsLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 1238, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, SrecordsLayout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32))
-        );
-        SrecordsLayout.setVerticalGroup(
-            SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SrecordsLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel6)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(SrecordsLayout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(sv2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(44, Short.MAX_VALUE))
-        );
+        Srecords = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        sv2 = new javax.swing.JButton();
 
         deleteStudent.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         deleteStudent.setText("DELETE");
         deleteStudent.setToolTipText("");
+        deleteStudent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteStudentActionPerformed(evt);
+            }
+        });
         jPopMenu.add(deleteStudent);
         deleteStudent.getAccessibleContext().setAccessibleName("Menu2");
 
@@ -654,6 +556,110 @@ private StudentsRepository repo = new StudentsRepository();
             .addComponent(studentInfoTab)
         );
 
+        Srecords.setBackground(new java.awt.Color(232, 233, 215));
+
+        jLabel6.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
+        jLabel6.setText("STUDENT RECORDS");
+
+        jPanel14.setBackground(new java.awt.Color(117, 117, 117));
+        jPanel14.setPreferredSize(new java.awt.Dimension(0, 3));
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 5, Short.MAX_VALUE)
+        );
+
+        jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "DATE", "TIME IN", "TIME OUT"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel9.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        jLabel9.setText("Name:");
+
+        jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        jLabel8.setText("Student ID:");
+
+        jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        jLabel10.setText("Grade / Section:");
+
+        sv2.setBackground(new java.awt.Color(0, 102, 51));
+        sv2.setForeground(new java.awt.Color(255, 255, 255));
+        sv2.setText("EXIT");
+        sv2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sv2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout SrecordsLayout = new javax.swing.GroupLayout(Srecords);
+        Srecords.setLayout(SrecordsLayout);
+        SrecordsLayout.setHorizontalGroup(
+            SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(SrecordsLayout.createSequentialGroup()
+                .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(SrecordsLayout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel6))
+                    .addGroup(SrecordsLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(sv2, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SrecordsLayout.createSequentialGroup()
+                .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(SrecordsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 1238, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, SrecordsLayout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32))
+        );
+        SrecordsLayout.setVerticalGroup(
+            SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(SrecordsLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(SrecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(SrecordsLayout.createSequentialGroup()
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sv2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -668,6 +674,11 @@ private StudentsRepository repo = new StudentsRepository();
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(Srecords, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -684,6 +695,11 @@ private StudentsRepository repo = new StudentsRepository();
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, 0))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(Srecords, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
@@ -717,50 +733,15 @@ private StudentsRepository repo = new StudentsRepository();
     }//GEN-LAST:event_test1MouseClicked
 
     private void studentInfoTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_studentInfoTabStateChanged
-        int selectedIndex = studentInfoTab.getSelectedIndex();
-        String title = studentInfoTab.getTitleAt(selectedIndex);
-        
-        String slicedTitleTab [] = title.split(" ");
-        
-        String strand = slicedTitleTab[0];
-        int yearLevel = Integer.parseInt(slicedTitleTab[1]);
-        String section = slicedTitleTab[2];
-        
-        int count = repo.countValues(strand, section, yearLevel);
-        
-        
-            Map<Integer, JTable> tableMap = new HashMap<>();
-            tableMap.put(0, tbIctHope);
-            tableMap.put(1, tbIctLove);
-            tableMap.put(2, tbHumssHope);
-            tableMap.put(3, tbHumssLove);
-            tableMap.put(4, tbHumssFaith);
-            tableMap.put(5, tbAbmLove);
-            tableMap.put(6, tbStemHope);
-        try {
-            ResultSet rs = repo.getStudentsRecords(strand, yearLevel, section);
-            DefaultTableModel dft = (DefaultTableModel)  tableMap.get(selectedIndex).getModel();
-            dft.setRowCount(0);
-            while (rs.next()) {                
-                 utils.setValueInTable(
-                         tableMap.get(selectedIndex), 
-                         rs.getString("student_id"), 
-                         rs.getString("student_name"), 
-                         rs.getString("address"),
-                         rs.getString("station"), 
-                         section, 
-                         count);
-            }
-
-
-        } catch (Exception e) {
-        } finally {
-        }
-
-        
-        
-        
-        
+        utils.refreshTable(studentInfoTab,
+              repo,
+              tbIctHope,
+              tbIctLove,
+              tbHumssHope,
+              tbHumssLove,
+              tbHumssFaith,
+              tbAbmLove,
+              tbStemHope);
     }//GEN-LAST:event_studentInfoTabStateChanged
 
     private void tbIctHopeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbIctHopeMouseReleased
@@ -776,11 +757,30 @@ private StudentsRepository repo = new StudentsRepository();
         }
         jPopMenu.show(evt.getComponent(), evt.getX(), evt.getY()); 
            }
-        int selectedRow = tbIctHope.getSelectedRow();
-        
-        System.out.println(tbIctHope.getValueAt(selectedRow, 0));
+ 
+
         
     }//GEN-LAST:event_tbIctHopeMousePressed
+
+    private void deleteStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStudentActionPerformed
+      int option = JOptionPane.showConfirmDialog(this, "Do you want to delete this?");
+      int selectedRow = tbIctHope.getSelectedRow();  
+      String studentId = (String) tbIctHope.getValueAt(selectedRow, 0);
+      
+      repo.deleteStudents(studentId);
+      
+      utils.refreshTable(studentInfoTab,
+              repo,
+              tbIctHope,
+              tbIctLove,
+              tbHumssHope,
+              tbHumssLove,
+              tbHumssFaith,
+              tbAbmLove,
+              tbStemHope);
+      
+        
+    }//GEN-LAST:event_deleteStudentActionPerformed
 
     /**
      * @param args the command line arguments

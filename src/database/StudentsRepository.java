@@ -177,9 +177,45 @@ public class StudentsRepository {
          
          return 1;
      }
+     public void deleteStudents(String student_id){
+         String students_id = this.getUserId(student_id);
+         String stmt1 = "DELETE FROM students "
+                 + "WHERE student_id = ?";
+         String stmt2 = "DELETE FROM add_info "
+                 + "WHERE students_id = ?";
+         PreparedStatement ps1;
+    
+         PreparedStatement ps2;
+         try {
+             ps1 = this.conn.prepareStatement(stmt1);
+             ps1.setString(1,student_id);
+             int rowsAffected = ps1.executeUpdate();
+             
+             ps2 = this.conn.prepareStatement(stmt2);
+             ps2.setString(1, students_id);
+             int rowsAffected1 = ps2.executeUpdate();
+             
+             
+             if(rowsAffected > 0 && rowsAffected1 > 0){
+                 System.out.println("Successfully Deleted!");
+
+             }else{
+                 System.out.println("No records to delete");
+             }
+
+           
+         } catch (SQLException e) {
+             System.out.println(e.getMessage());
+         } finally {
+         }
+     }
     public static void main(String[] args) {
         StudentsRepository std = new StudentsRepository();
 
-
+        try {
+            std.deleteStudents("2212601");
+        } catch (Exception e) {
+        } finally {
+        }
     }
 }
