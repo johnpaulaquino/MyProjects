@@ -4,12 +4,22 @@
  */
 package database;
 
+import com.mysql.cj.xdevapi.Result;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
 import java.util.UUID;
+
 
 /**
  *
@@ -28,7 +38,7 @@ public class StudentsRepository {
             String student_id,
             String contact_no,
             String address,
-            String station) throws SQLException {
+            String station) throws SQLException, FileNotFoundException {
 
         PreparedStatement ps1;
 
@@ -39,17 +49,45 @@ public class StudentsRepository {
         try {
 
             ps1 = this.conn.prepareStatement(stmt1);
+            
             ps1.setString(1, student_id);
             ps1.setString(2, contact_no);
             ps1.setString(3, address);
             ps1.setString(4, station);
+            
             this.conn.setAutoCommit(false);
-            ps1.execute();
+            
+            ps1.executeUpdate();
+   
             this.conn.commit();
         } catch (SQLException e) {
             this.conn.rollback();
         } 
 
+    }
+    
+    public void addStudentProfilePicture(String student_id, File file, String filename) throws FileNotFoundException, SQLException{
+        PreparedStatement ps;
+        
+        String stmt = "INSERT INTO students_profile"
+                + " (students_id, profile_picture, profile_name) "
+                + "VALUES(?,?,?)";
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            
+            ps = this.conn.prepareStatement(stmt);
+            ps.setString(1, student_id);
+            ps.setBlob(2, fis);
+            ps.setString(3, filename);
+            this.conn.setAutoCommit(false);
+            ps.executeUpdate();
+            this.conn.commit();
+            
+        } catch (SQLException e) {
+            this.conn.rollback();
+            System.out.println("An error Occurred: "+ e.getMessage());
+        } finally {
+        }
     }
 
     public String getUserId(String studentId) {
@@ -70,7 +108,8 @@ public class StudentsRepository {
                 studentIdFromDb = rs1.getString("id");
 
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
 
         return studentIdFromDb;
@@ -84,7 +123,9 @@ public class StudentsRepository {
             String strand,
             String contact_no,
             String address,
-            String station) throws SQLException {
+            String station,
+            File file,
+            String filename) throws SQLException, FileNotFoundException {
         //Generate UUID for Students id
         UUID uuid = UUID.randomUUID();
         PreparedStatement ps1;
@@ -104,11 +145,18 @@ public class StudentsRepository {
             ps1.setString(5, section);
             ps1.setString(6, strand);
             this.conn.setAutoCommit(false);
-            ps1.execute();
+            ps1.executeUpdate();
             this.conn.commit();
+            
+            
+            //Get the student unique identifier from db
+            
             String studentIdFromDb = this.getUserId(studentId);
-
+            
+            
             this.add_additional_info(studentIdFromDb, contact_no, address, station);
+            
+            this.addStudentProfilePicture(studentIdFromDb, file, filename);
             
             return true;
         } catch (SQLException e) {
@@ -178,25 +226,18 @@ public class StudentsRepository {
          return 1;
      }
      public void deleteStudents(String student_id){
-         String students_id = this.getUserId(student_id);
          String stmt1 = "DELETE FROM students "
                  + "WHERE student_id = ?";
-         String stmt2 = "DELETE FROM add_info "
-                 + "WHERE students_id = ?";
+       
          PreparedStatement ps1;
-    
-         PreparedStatement ps2;
+
          try {
              ps1 = this.conn.prepareStatement(stmt1);
              ps1.setString(1,student_id);
              int rowsAffected = ps1.executeUpdate();
              
-             ps2 = this.conn.prepareStatement(stmt2);
-             ps2.setString(1, students_id);
-             int rowsAffected1 = ps2.executeUpdate();
-             
-             
-             if(rowsAffected > 0 && rowsAffected1 > 0){
+    
+             if(rowsAffected > 0){
                  System.out.println("Successfully Deleted!");
 
              }else{
@@ -209,13 +250,39 @@ public class StudentsRepository {
          } finally {
          }
      }
-    public static void main(String[] args) {
-        StudentsRepository std = new StudentsRepository();
+     
+     public ResultSet studentInformation(String student_id){
+         ResultSet rs;
+         PreparedStatement ps;
+         String stmt = "Select s.student_id, s.student_name, "
+                 + "s.year_level, s.section, s.strand, "
+                 + "a.contact_no, a.station, a.address,"
+                 + "p.profile_picture, p.profile_name "
+                 + "FROM students as s "
+                 + "INNER JOIN add_info as a "
+                 + "ON s.id = a.students_id "
+                 + "INNER JOIN students_profile as p "
+                 + "ON s.id = p.students_id "
+                 + "WHERE s.student_id = ?";
+         try {
+             ps = this.conn.prepareStatement(stmt);
+             ps.setString(1, student_id);
+             
+             rs = ps.executeQuery();
+             
+             return rs;
+             
+         } catch (SQLException e) {
+         }
+         return null;
 
-        try {
-            std.deleteStudents("2212601");
-        } catch (Exception e) {
-        } finally {
-        }
+     }
+    public static void main(String[] args) throws SQLException  {
+        StudentsRepository std = new StudentsRepository();
+        
+        
+        ResultSet rs = std.studentInformation("221256");
+        
+        
     }
 }

@@ -1,7 +1,14 @@
 
 import database.StudentsRepository;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import utils.Utility;
 
 /*
@@ -21,7 +28,10 @@ public class AddStudents extends javax.swing.JFrame {
      * Creates new form AddStudents
      */
     public AddStudents() {
+        
         initComponents();
+        Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 1); // 5px black border
+        lbFilePath.setBorder(blackBorder);
     }
 
     /**
@@ -57,6 +67,8 @@ public class AddStudents extends javax.swing.JFrame {
         tfStation = new javax.swing.JTextField();
         clearBt = new javax.swing.JButton();
         addBt = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        lbFilePath = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -332,21 +344,32 @@ public class AddStudents extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("Add Picture");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        lbFilePath.setText("File Path");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tfAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
+                    .addComponent(tfStation)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tfAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
-                            .addComponent(tfStation)))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(226, 226, 226)
-                        .addComponent(clearBt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(238, 238, 238)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lbFilePath, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(66, 66, 66)
+                                .addComponent(clearBt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(214, 214, 214)
                         .addComponent(addBt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -355,13 +378,20 @@ public class AddStudents extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(tfAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tfStation, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(clearBt, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addBt, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(63, 63, 63))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbFilePath, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(clearBt, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addBt, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(244, 244, 244))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -448,41 +478,60 @@ public class AddStudents extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtActionPerformed
 
     private void addBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtActionPerformed
+        // This method is used to validate the field before adding in the database
         String message = utils.validateTextField(tfStudentName.getText(),
                 tfStudentId.getText(),
                 tfAddress.getText(),
                 tfStation.getText(),
                 cbSection.getSelectedItem().toString(),
-                tfContactNo.getText());
-
+                tfContactNo.getText(),
+                lbFilePath.getText());
+        
+        //get the student id of a student in database
+        String isStudentExist = studentRepo.getUserId(tfStudentId.getText());
+        
+        //check if the message is not null
         if (!message.equals("")) {
-            JOptionPane.showMessageDialog(this, message);
-        }
-
-        try {
-            String gradeSectionSlicer[] = cbSection.getSelectedItem().toString().split(" ");
-            int yearLevel = Integer.parseInt(gradeSectionSlicer[1]);
-            String section = gradeSectionSlicer[2];
-            String strand = gradeSectionSlicer[0];
-
-            boolean isSuccessfullyAdded = studentRepo.addStudents(
-                    tfStudentId.getText(),
-                    tfStudentName.getText(),
-                    yearLevel,
-                    section,
-                    strand,
-                    tfContactNo.getText(),
-                    tfAddress.getText(),
-                    tfStation.getText());
-            
-            if (isSuccessfullyAdded) {
-                JOptionPane.showMessageDialog(this, "Successfully added student!");
-            }
+            JOptionPane.showMessageDialog(this,message);
+        
+        //Check if the user is exist in the database
+        }else if (!isStudentExist.equals("")) {
+                JOptionPane.showMessageDialog(this, "Student is already Exist!");
+        }else{
+            //otherwise proceed to adding in the database
+            try {
+                String gradeSectionSlicer[] = cbSection.getSelectedItem().toString().split(" ");
+                int yearLevel = Integer.parseInt(gradeSectionSlicer[1]);
+                String section = gradeSectionSlicer[2];
+                String strand = gradeSectionSlicer[0];
+                File file = new File(lbFilePath.getText());
+                
+                if(file.length() > 10 * (1024 * 1024)){
+                    JOptionPane.showMessageDialog(this, "The maximum size of an image is 10 MB!");
+                }
+                boolean isSuccessfullyAdded = studentRepo.addStudents(
+                        tfStudentId.getText(),
+                        tfStudentName.getText(),
+                        yearLevel,
+                        section,
+                        strand,
+                        tfContactNo.getText(),
+                        tfAddress.getText(),
+                        tfStation.getText(),
+                        file,
+                        file.getName()
+                        
+                );
+                //check if no error while adding the student in the database
+                if (isSuccessfullyAdded) {
+                    JOptionPane.showMessageDialog(this, "Successfully added student!");
+                }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
+        }catch (FileNotFoundException fnfe){
         } finally {
         }
-
+   }
 
     }//GEN-LAST:event_addBtActionPerformed
 
@@ -495,6 +544,17 @@ public class AddStudents extends javax.swing.JFrame {
         records.show();
         dispose();
     }//GEN-LAST:event_barcodeActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+         JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(null); // Opens a file selection dialog
+        
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            lbFilePath.setText(selectedFile.getAbsolutePath());
+        }
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -539,6 +599,7 @@ public class AddStudents extends javax.swing.JFrame {
     private javax.swing.JButton clearBt;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -551,6 +612,7 @@ public class AddStudents extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JLabel lbFilePath;
     private javax.swing.JTextField tfAddress;
     private javax.swing.JTextField tfContactNo;
     private javax.swing.JTextField tfStation;
