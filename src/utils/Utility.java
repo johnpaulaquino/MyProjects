@@ -7,33 +7,25 @@ package utils;
 
 import database.StudentsRepository;
 import java.awt.Image;
-
+import java.sql.Blob;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import net.sourceforge.barbecue.Barcode;
-import net.sourceforge.barbecue.BarcodeException;
-import net.sourceforge.barbecue.BarcodeFactory;
-import net.sourceforge.barbecue.BarcodeImageHandler;
-import net.sourceforge.barbecue.output.OutputException;
 
 /**
  *
@@ -112,25 +104,6 @@ public class Utility {
         return message;
 
     }
-
-    private static void showBarcode(BufferedImage image) {
-        JFrame frame = new JFrame("Barcode Example");
-        frame.setSize(350, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JLabel label = new JLabel(new ImageIcon(image));
-        frame.add(label);
-
-        frame.setVisible(true);
-    }
-
-    public void barCodeGenerator(String data) throws BarcodeException, OutputException, IOException {
-        Barcode bd = BarcodeFactory.createCode128A(data);
-        bd.setBarWidth(2); // Adjust width
-        bd.setDrawingText(false);
-        BarcodeImageHandler.savePNG(bd, new File("/home/pj/Downloads/barcode.png"));
-    }
-
     public void setValueInTable(
             JTable tableName,
             String studentId,
@@ -213,15 +186,29 @@ public class Utility {
         }
     }
     
+    public byte[] getImageBytes(Blob blob, String rsString) throws SQLException, IOException{
+        InputStream is = blob.getBinaryStream();
+        byte bytes []= is.readAllBytes();
+        
+        return bytes;
+    }
+    
+    public void setImageInLabel(JLabel label, byte imageBytes []) throws IOException{
+        //Convert the bytes into BufferedImage
+        ByteArrayInputStream byteArray = new ByteArrayInputStream(imageBytes);
+        BufferedImage origImage = ImageIO.read(byteArray);
+        
+        Image scaledImage = origImage.getScaledInstance
+                                (origImage.getWidth(), origImage.getHeight(), Image.SCALE_SMOOTH);
+        
+        ImageIcon icon = new ImageIcon(scaledImage);
+        
+        label.setIcon(icon);
+       
+    }
 
     public static void main(String[] args) {
         Utility utils = new Utility();
-
-//       utils.validateTextField("paul", "123", "123", 
-//               "asd", "asd", "123", 
-//               "/home/pj/Downloads/CCS Exhibit activity/1739415286139.jpg");
-        
-           
 
     }
 

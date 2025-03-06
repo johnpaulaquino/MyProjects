@@ -13,12 +13,17 @@ import java.sql.Blob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
 import java.util.UUID;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 
 /**
@@ -277,12 +282,7 @@ public class StudentsRepository {
          return null;
 
      }
-    public static void main(String[] args) throws SQLException  {
+    public static void main(String[] args) throws SQLException, IOException  {
         StudentsRepository std = new StudentsRepository();
-        
-        
-        ResultSet rs = std.studentInformation("221256");
-        
-        
     }
 }

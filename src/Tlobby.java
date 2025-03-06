@@ -1,6 +1,8 @@
 
+import java.sql.Blob;
 import java.sql.ResultSet;
 import database.StudentsRepository;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +51,7 @@ private int mouseX, mouseY;
         sRecords = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
-        lblProfilePricture = new javax.swing.JLabel();
+        lblProfilePicture = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTimeInOut = new javax.swing.JTable();
         lbNameStd = new javax.swing.JLabel();
@@ -153,7 +155,7 @@ private int mouseX, mouseY;
             .addGap(0, 5, Short.MAX_VALUE)
         );
 
-        lblProfilePricture.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        lblProfilePicture.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         tblTimeInOut.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -219,7 +221,7 @@ private int mouseX, mouseY;
                         .addGroup(sRecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(sRecordsLayout.createSequentialGroup()
                                 .addGroup(sRecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblProfilePricture, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblProfilePicture, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbNameStd, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbStudentId, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbYearlLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -251,7 +253,7 @@ private int mouseX, mouseY;
                 .addGroup(sRecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(sRecordsLayout.createSequentialGroup()
-                        .addComponent(lblProfilePricture, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblProfilePicture, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lbNameStd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -852,6 +854,14 @@ private int mouseX, mouseY;
             lbContactStd.setText(rs.getString("a.contact_no"));
             lbYearlLevel.setText(stdyearInfo);
             lbStationStd.setText(rs.getString("a.station"));
+            
+            Blob blob = rs.getBlob("p.profile_picture");
+            try {
+                byte bytes [] =  utils.getImageBytes(blob, stdyearInfo);
+                utils.setImageInLabel(lblProfilePicture, bytes);
+            } catch (IOException ex) {
+                Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     } catch (SQLException ex) {
         Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
@@ -941,7 +951,7 @@ private int mouseX, mouseY;
     private javax.swing.JLabel lbStationStd;
     private javax.swing.JLabel lbStudentId;
     private javax.swing.JLabel lbYearlLevel;
-    private javax.swing.JLabel lblProfilePricture;
+    private javax.swing.JLabel lblProfilePicture;
     private javax.swing.JPanel pAbmLove;
     private javax.swing.JPanel pHumsHope;
     private javax.swing.JPanel pHumssFaith;
