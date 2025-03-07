@@ -41,8 +41,6 @@ class Dependencies:
             del curr_user['hash_password']
             del curr_user['email']
             return curr_user
-        except Exception as e :
-            print(f'An error occurred {e}')
         except ExpiredSignatureError:
             raise HTTPException(
                     status_code = status.HTTP_401_UNAUTHORIZED,

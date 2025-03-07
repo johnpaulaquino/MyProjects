@@ -34,7 +34,7 @@ class BookServices :
             if user_role == 'member':
                 raise HTTPException(
                         status_code = status.HTTP_401_UNAUTHORIZED,
-                        detail = 'You are not admin to access this!'
+                        detail = 'You are not allowed to access this!'
                 )
             book_data = Books(
                     isbn = book.isbn,
@@ -51,4 +51,4 @@ class BookServices :
                     content = {'status': 'ok', 'message': 'Successfully added book!'}
             )
         except Exception as e:
-            print(f'An error occurred {e}')
+            raise e
