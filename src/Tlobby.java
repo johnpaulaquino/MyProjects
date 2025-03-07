@@ -122,21 +122,6 @@ private int mouseX, mouseY;
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         sRecords.setBackground(new java.awt.Color(232, 233, 215));
-        sRecords.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                sRecordsMouseDragged(evt);
-            }
-        });
-        sRecords.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                sRecordsMousePressed(evt);
-            }
-        });
-        sRecords.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                sRecordsKeyPressed(evt);
-            }
-        });
 
         jLabel6.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
         jLabel6.setText("STUDENT RECORDS");
@@ -166,13 +151,14 @@ private int mouseX, mouseY;
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tblTimeInOut.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblTimeInOut);
         if (tblTimeInOut.getColumnModel().getColumnCount() > 0) {
             tblTimeInOut.getColumnModel().getColumn(0).setResizable(false);
@@ -468,6 +454,7 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbIctHope.getTableHeader().setReorderingAllowed(false);
         tbIctHope.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tbIctHopeMousePressed(evt);
@@ -857,8 +844,7 @@ private int mouseX, mouseY;
             
             Blob blob = rs.getBlob("p.profile_picture");
             try {
-                byte bytes [] =  utils.getImageBytes(blob, stdyearInfo);
-                utils.setImageInLabel(lblProfilePicture, bytes);
+                utils.setImageInLabel(lblProfilePicture, blob);
             } catch (IOException ex) {
                 Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -867,21 +853,6 @@ private int mouseX, mouseY;
         Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
     }
     }//GEN-LAST:event_studentInfoActionPerformed
-
-    private void sRecordsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sRecordsKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sRecordsKeyPressed
-
-    private void sRecordsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sRecordsMousePressed
-//        mouseX = evt.getX();
-//        mouseY = evt.getY();
-    }//GEN-LAST:event_sRecordsMousePressed
-
-    private void sRecordsMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sRecordsMouseDragged
-//         int newX = sRecords.getX() + evt.getX() - mouseX;
-//    int newY = sRecords.getY() + evt.getY() - mouseY;
-//    sRecords.setLocation(newX, newY);
-    }//GEN-LAST:event_sRecordsMouseDragged
 
     /**
      * @param args the command line arguments

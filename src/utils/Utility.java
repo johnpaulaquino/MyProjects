@@ -186,20 +186,21 @@ public class Utility {
         }
     }
     
-    public byte[] getImageBytes(Blob blob, String rsString) throws SQLException, IOException{
+    public byte[] getImageBytes(Blob blob) throws SQLException, IOException{
         InputStream is = blob.getBinaryStream();
         byte bytes []= is.readAllBytes();
         
         return bytes;
     }
     
-    public void setImageInLabel(JLabel label, byte imageBytes []) throws IOException{
+    public void setImageInLabel(JLabel label, Blob blob) throws IOException, SQLException{
         //Convert the bytes into BufferedImage
+        byte imageBytes [] = this.getImageBytes(blob);
         ByteArrayInputStream byteArray = new ByteArrayInputStream(imageBytes);
         BufferedImage origImage = ImageIO.read(byteArray);
         
         Image scaledImage = origImage.getScaledInstance
-                                (origImage.getWidth(), origImage.getHeight(), Image.SCALE_SMOOTH);
+                                (label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
         
         ImageIcon icon = new ImageIcon(scaledImage);
         
