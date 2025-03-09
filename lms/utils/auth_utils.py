@@ -37,7 +37,7 @@ class AuthUtility :
     @staticmethod
     def generate_access_token(data: dict) :
         to_encode = data.copy()
-        expires = datetime.now(timezone.utc) + timedelta(minutes = 3)
+        expires = datetime.now(timezone.utc) + timedelta(days = 3)
         
         to_encode.update({'exp' : expires})
         payload = jwt.encode(to_encode , settings.JWT_KEY , algorithm = settings.JWT_ALGORITHM)

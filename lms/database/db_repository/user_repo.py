@@ -1,6 +1,6 @@
 
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import select , and_ , update
+from sqlalchemy import select , and_ , update, values
 from lms.database.db_engine.engine import create_session
 from lms.database.models.users import Users
 
@@ -65,3 +65,25 @@ class UserRepository:
             except SQLAlchemyError as e :
                 print(f'An error occurred {e}')
                 return False
+            
+    @staticmethod
+    async def update_personal_info(user_id, user : Users):
+        try:
+            async with create_session() as db :
+                stmt = update(Users).where(Users.id == user_id).values(
+                        lastname = user.lastname,
+                        firstname = user.firstname,
+                        middle_name = user.middle_name)
+                await db.execute(stmt)
+                await db.commit()
+                
+                user_refresh = await UserRepository.find_user_by_user_id(user_id)
+                await db.refresh(user_refresh)
+                return user_refresh
+        except Exception as e:
+            db.commit()
+            print(f'An error occurred {e}')
+            return False
+            
+            
+            

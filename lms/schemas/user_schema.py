@@ -17,3 +17,9 @@ class UserSchemaSignup(BaseUserSchema) :
 
 class UserSchemaInDB(BaseUserSchema) :
     hash_password: str
+
+class UserUpdateSchema(BaseModel):
+    firstname: str = 'John'
+    middle_name: str = 'Chicago'
+    lastname: str = 'Doe'
+    

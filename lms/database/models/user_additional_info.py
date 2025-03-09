@@ -8,7 +8,7 @@ class UserAdditionalInfo(Base):
 
 
     id : int = Column('id', Integer, primary_key=True, autoincrement=True, unique=True)
-    user_id : str = Column('user_id', String, ForeignKey('users.id'))
+    user_id : str = Column('user_id', String, ForeignKey('users.id', ondelete = "CASCADE"))
     profile_url : str = Column('profile_url', String)
     username : str = Column('username', String)
     birth_date : date = Column('birth_date', Date, nullable=False)

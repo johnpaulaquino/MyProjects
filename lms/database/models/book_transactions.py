@@ -8,7 +8,7 @@ class BooksTransactions(Base):
     
     
     id : int = Column('id', Integer, primary_key=True, autoincrement=True, unique=True)
-    user_id : str = Column('user_id', String, ForeignKey('users.id'))
-    book_id : int = Column('book_id', Integer, ForeignKey('books.id'))
+    user_id : str = Column('user_id', String, ForeignKey('users.id', ondelete = "CASCADE"))
+    book_id : int = Column('book_id', Integer, ForeignKey('books.id ', ondelete = "CASCADE"))
     borrow_date  : date = Column('borrow_date', Date, nullable=False)
     return_date : date = Column('return_date', Date, nullable=False)

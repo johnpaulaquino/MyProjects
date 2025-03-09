@@ -5,6 +5,7 @@ from lms.config.settings import Settings
 from lms.routes.signup_route import signup
 from lms.routes.login_route import login
 from lms.routes.books_route import books
+from lms.routes.user_routes import users_route
 
 from lms.utils.app_utils import AppUtility
 
@@ -24,6 +25,7 @@ app = FastAPI(
 app.include_router(signup)
 app.include_router(login)
 app.include_router(books)
+app.include_router(users_route)
 
 if __name__ == '__main__':
     uvicorn.run('app:app', reload=True)

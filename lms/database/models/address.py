@@ -5,7 +5,7 @@ class Address(Base):
     __tablename__ = 'address'
     
     id: int = Column('id', Integer, primary_key=True, autoincrement=True, unique=True)
-    user_id: str = Column('user_id', String, ForeignKey('users.id'))
+    user_id: str = Column('user_id', String, ForeignKey('users.id', ondelete = "CASCADE"))
     barangay: str = Column('barangay', String, nullable=False)
     municipality: str = Column('municipality', String, nullable=False)
     province: str = Column('province', String, nullable=False)

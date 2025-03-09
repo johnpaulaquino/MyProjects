@@ -39,7 +39,7 @@ async def create_session() -> AsyncSession:
             yield session
         except Exception as e:
             print(f'An error occurred {e}!')
-            session.rollback()
+            await session.rollback()
             
             
         
