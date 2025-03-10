@@ -71,5 +71,11 @@ class BooksRepository :
         try:
             async with create_session() as db:
                 stmt = delete(Books).where(Books.id == book_id)
+                await db.execute(stmt)
+                await db.commit()
+                
+                return True
         except SQLAlchemyError as e:
+            await db.rollback()
             print(f'An error occurred {e}')
+            return False

@@ -47,9 +47,10 @@ async def update_books(
         raise e
 
 
-@books.delete('/delete-book/{book_id}')
+@books.delete('/delete-book/{book_id}', tags = ['Admin'])
 async def delete_book(book_id: int , curr_user = Depends(Dependencies.get_current_user)) :
     try :
-        pass
+        return BookServices.delete_book(book_id, curr_user)
     except Exception as e :
         print(f'An error occurred {e}')
+        raise e

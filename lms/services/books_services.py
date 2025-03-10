@@ -70,7 +70,7 @@ class BookServices :
             if not is_book_exist:
                 raise HTTPException(
                         status_code = status.HTTP_400_BAD_REQUEST,
-                        detail = 'Book is not exist!'
+                        detail = 'This book is not exist!'
                 )
             
             updating_book = Books(
@@ -86,6 +86,33 @@ class BookServices :
             return JSONResponse(
                     status_code = status.HTTP_200_OK,
                     content = {'message' : 'Successfully update book!'}
+            )
+        except Exception as e:
+            print(f'An error occurred {e}')
+            raise e
+    
+    @staticmethod
+    async def delete_book(book_id : int, curr_user):
+        try:
+            user_role = curr_user['role']
+            if user_role == 'member':
+                raise HTTPException(
+                        status_code = status.HTTP_401_UNAUTHORIZED,
+                        detail = 'You are not allowed to access this!'
+                )
+            is_book_exist = await BooksRepository.find_book_by_id(book_id)
+            
+            if not is_book_exist:
+                raise HTTPException(
+                        status_code = status.HTTP_400_BAD_REQUEST,
+                        detail = 'This book is not exist!'
+                )
+            
+            await BooksRepository.delete_book(book_id)
+            
+            return JSONResponse(
+                    status_code = status.HTTP_200_OK,
+                    content = {'message' : 'Successfully deleted book!'}
             )
         except Exception as e:
             print(f'An error occurred {e}')
