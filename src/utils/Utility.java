@@ -4,7 +4,6 @@
  */
 package utils;
 
-
 import database.StudentsRepository;
 import java.awt.Image;
 import java.sql.Blob;
@@ -17,6 +16,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -26,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DateFormatter;
 
 /**
  *
@@ -74,10 +78,6 @@ public class Utility {
             message = "Select profile image!";
             return message;
         }
-        if (!tfStudentId.matches("\\d+")) {
-            message = "Student Id Must be a number only!";
-            return message;
-        }
 
         if (!tfContactNo.matches("\\d+")) {
             message = "Contact No. Must be a number only!";
@@ -86,24 +86,24 @@ public class Utility {
 
         String filePathSliced[] = profilePath.split("[.]");
         String fileExtension = filePathSliced[1];
-        String fileExtensionsAllowed [] = {"png","jpeg","jpg",};
-        
+        String fileExtensionsAllowed[] = {"png", "jpeg", "jpg",};
+
         boolean isExist = false;
         for (String extAllowed : fileExtensionsAllowed) {
-            if(extAllowed.equals(fileExtension)){
-                isExist= true;
+            if (extAllowed.equals(fileExtension)) {
+                isExist = true;
             }
         }
-        if(!isExist){
+        if (!isExist) {
             message = "Invalid File extension!";
-            
+
             return message;
         }
-        
-        
+
         return message;
 
     }
+
     public void setValueInTable(
             JTable tableName,
             String studentId,
@@ -170,47 +170,44 @@ public class Utility {
         } finally {
         }
     }
-    
-    public void createTempFiles(String filename){
-        try {
-            Path folder = Paths.get(System.getProperty("user.dir"), "temp");
-            
-            if(!Files.exists(folder)){
-                Files.createDirectories(folder);
-            }
-            Path filePath = folder.resolve(filename);
-            Files.createFile(filePath);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-        }
-    }
-    
-    public byte[] getImageBytes(Blob blob) throws SQLException, IOException{
+
+    public byte[] getImageBytes(Blob blob) throws SQLException, IOException {
         InputStream is = blob.getBinaryStream();
-        byte bytes []= is.readAllBytes();
-        
+        byte bytes[] = is.readAllBytes();
+
         return bytes;
     }
-    
-    public void setImageInLabel(JLabel label, Blob blob) throws IOException, SQLException{
+
+    public void setImageInLabel(JLabel label, Blob blob) throws IOException, SQLException {
         //Convert the bytes into BufferedImage
-        byte imageBytes [] = this.getImageBytes(blob);
+        byte imageBytes[] = this.getImageBytes(blob);
         ByteArrayInputStream byteArray = new ByteArrayInputStream(imageBytes);
         BufferedImage origImage = ImageIO.read(byteArray);
-        
-        Image scaledImage = origImage.getScaledInstance
-                                (label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
-        
+
+        Image scaledImage = origImage.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+
         ImageIcon icon = new ImageIcon(scaledImage);
-        
+
         label.setIcon(icon);
-       
+
+    }
+
+    public String totalRenderedTime(LocalTime timeIn, LocalTime timeOut) {
+        
+        String totalHours = "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h a");
+
+        long seconds = Duration.between(timeIn, timeOut).getSeconds();
+        long hours = seconds / 3600;
+
+        totalHours = String.valueOf(hours);
+        return totalHours;
     }
 
     public static void main(String[] args) {
-        Utility utils = new Utility();
-
+        LocalTime timein = LocalTime.of(0,0);
+        LocalTime timeout = LocalTime.of(0, 0, 0);
+        System.out.println(new Utility().totalRenderedTime(timein, timeout));
     }
 
 }

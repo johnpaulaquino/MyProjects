@@ -4,27 +4,21 @@
  */
 package database;
 
-import com.mysql.cj.xdevapi.Result;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.sql.Blob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
 
 import java.util.UUID;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 
 /**
  *
@@ -54,32 +48,32 @@ public class StudentsRepository {
         try {
 
             ps1 = this.conn.prepareStatement(stmt1);
-            
+
             ps1.setString(1, student_id);
             ps1.setString(2, contact_no);
             ps1.setString(3, address);
             ps1.setString(4, station);
-            
+
             this.conn.setAutoCommit(false);
-            
+
             ps1.executeUpdate();
-   
+
             this.conn.commit();
         } catch (SQLException e) {
             this.conn.rollback();
-        } 
+        }
 
     }
-    
-    public void addStudentProfilePicture(String student_id, File file, String filename) throws FileNotFoundException, SQLException{
+
+    public void addStudentProfilePicture(String student_id, File file, String filename) throws FileNotFoundException, SQLException {
         PreparedStatement ps;
-        
+
         String stmt = "INSERT INTO students_profile"
                 + " (students_id, profile_picture, profile_name) "
                 + "VALUES(?,?,?)";
         try {
             FileInputStream fis = new FileInputStream(file);
-            
+
             ps = this.conn.prepareStatement(stmt);
             ps.setString(1, student_id);
             ps.setBlob(2, fis);
@@ -87,10 +81,10 @@ public class StudentsRepository {
             this.conn.setAutoCommit(false);
             ps.executeUpdate();
             this.conn.commit();
-            
+
         } catch (SQLException e) {
             this.conn.rollback();
-            System.out.println("An error Occurred: "+ e.getMessage());
+            System.out.println("An error Occurred: " + e.getMessage());
         } finally {
         }
     }
@@ -118,6 +112,71 @@ public class StudentsRepository {
         }
 
         return studentIdFromDb;
+    }
+
+    public void studentTimeIn(
+            String studentId,
+            java.util.Date todayDate,
+            LocalTime timeIn) {
+        String stmt = "INSERT INTO students_tracker (student_id, date_in, time_in) "
+                + "Values (?,?,?)";
+
+        try (var ps1 = conn.prepareStatement(stmt)) {
+            ps1.setString(1, studentId);
+            ps1.setDate(2, new Date(todayDate.getTime()));
+            ps1.setTime(3, Time.valueOf(timeIn));
+            ps1.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void studentTimeOut(String studentId, LocalTime timeout, String totalRendered) {
+        String stmt = "UPdate students_tracker set time_out = ?, total_rendered = ?"
+                + " Where student_id = ?";
+        try (var ps1 = conn.prepareStatement(stmt)) {
+            ps1.setTime(1, Time.valueOf(timeout));
+            ps1.setString(2, totalRendered);
+            ps1.setString(3, studentId);
+
+            ps1.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public HashMap<String, String> studentGetTimeIn(String userId) {
+        String stmt = "Select time_in From students_tracker "
+                + "Where student_id = ? ";
+        HashMap<String, String> data = new HashMap<String, String>();
+        try (var ps1 = conn.prepareStatement(stmt)) {
+            ps1.setString(1, userId);
+            try (var rs = ps1.executeQuery()) {
+                if (rs.next()) {
+                    data.put("time_in", rs.getTime("time_in").toString());
+                    return data;
+                }
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+    
+    public ResultSet getStudentTracker(String userId){
+        String stmt = "Select time_out, time_in, date_in, Max(total_rendered) as t_rendered "
+                + "From students_tracker "
+                + "where student_id = ?";
+        try {
+            var ps1 = conn.prepareStatement(stmt);
+            var rs = ps1.executeQuery();
+            return rs;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return  null;
     }
 
     public boolean addStudents(
@@ -152,17 +211,14 @@ public class StudentsRepository {
             this.conn.setAutoCommit(false);
             ps1.executeUpdate();
             this.conn.commit();
-            
-            
+
             //Get the student unique identifier from db
-            
             String studentIdFromDb = this.getUserId(studentId);
-            
-            
+
             this.add_additional_info(studentIdFromDb, contact_no, address, station);
-            
+
             this.addStudentProfilePicture(studentIdFromDb, file, filename);
-            
+
             return true;
         } catch (SQLException e) {
             System.out.println("An error Occured: " + e.getMessage());
@@ -171,7 +227,8 @@ public class StudentsRepository {
         } finally {
         }
     }
-    public ResultSet getStudentsRecords(String strand, int yearLevel, String section){
+
+    public ResultSet getStudentsRecords(String strand, int yearLevel, String section) {
         PreparedStatement ps1;
         ResultSet rs;
         String stmt1 = "SELECT s.id, s.student_id, s.student_name,"
@@ -185,21 +242,21 @@ public class StudentsRepository {
                 + "AND s.strand = ?";
         try {
             ps1 = this.conn.prepareStatement(stmt1);
-            
+
             ps1.setInt(1, yearLevel);
             ps1.setString(2, section);
             ps1.setString(3, strand);
-            
+
             rs = ps1.executeQuery();
-  
+
             return rs;
-            
+
         } catch (SQLException e) {
         }
         return null;
     }
-    
-      public void closeConnection() {
+
+    public void closeConnection() {
         try {
             if (this.conn != null && !this.conn.isClosed()) {
                 conn.close();
@@ -207,82 +264,83 @@ public class StudentsRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-      }
-     public int countValues(String strand, String section, int yearLevel){
-         PreparedStatement ps ;
-         ResultSet rs;     
-         String stmt = "Select count(id) FROM students "
-                 + "WHERE year_level = ? and section = ? and strand = ?";
-         int count = 0;
-         try {
-             ps = this.conn.prepareStatement(stmt);
-             ps.setInt(1, yearLevel);
-             ps.setString(2, section);
-             ps.setString(3, strand);
-             rs = ps.executeQuery();
-             if (rs.next()){
-                 count = rs.getInt("count(id)");
-                 return count;
-             }
-         } catch (SQLException e) {
-         } finally {
-         }
-         
-         return 1;
-     }
-     public void deleteStudents(String student_id){
-         String stmt1 = "DELETE FROM students "
-                 + "WHERE student_id = ?";
-       
-         PreparedStatement ps1;
+    }
 
-         try {
-             ps1 = this.conn.prepareStatement(stmt1);
-             ps1.setString(1,student_id);
-             int rowsAffected = ps1.executeUpdate();
-             
-    
-             if(rowsAffected > 0){
-                 System.out.println("Successfully Deleted!");
+    public int countValues(String strand, String section, int yearLevel) {
+        PreparedStatement ps;
+        ResultSet rs;
+        String stmt = "Select count(id) FROM students "
+                + "WHERE year_level = ? and section = ? and strand = ?";
+        int count = 0;
+        try {
+            ps = this.conn.prepareStatement(stmt);
+            ps.setInt(1, yearLevel);
+            ps.setString(2, section);
+            ps.setString(3, strand);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count(id)");
+                return count;
+            }
+        } catch (SQLException e) {
+        } finally {
+        }
 
-             }else{
-                 System.out.println("No records to delete");
-             }
+        return 1;
+    }
 
-           
-         } catch (SQLException e) {
-             System.out.println(e.getMessage());
-         } finally {
-         }
-     }
-     
-     public ResultSet studentInformation(String student_id){
-         ResultSet rs;
-         PreparedStatement ps;
-         String stmt = "Select s.student_id, s.student_name, "
-                 + "s.year_level, s.section, s.strand, "
-                 + "a.contact_no, a.station, a.address,"
-                 + "p.profile_picture, p.profile_name "
-                 + "FROM students as s "
-                 + "INNER JOIN add_info as a "
-                 + "ON s.id = a.students_id "
-                 + "INNER JOIN students_profile as p "
-                 + "ON s.id = p.students_id "
-                 + "WHERE s.student_id = ?";
-         try {
-             ps = this.conn.prepareStatement(stmt);
-             ps.setString(1, student_id);
-             
-             rs = ps.executeQuery();
-             
-             return rs;
-             
-         } catch (SQLException e) {
-         }
-         return null;
+    public void deleteStudents(String student_id) {
+        String stmt1 = "DELETE FROM students "
+                + "WHERE student_id = ?";
 
-     }
-    public static void main(String[] args) throws SQLException, IOException  {
+        PreparedStatement ps1;
+
+        try {
+            ps1 = this.conn.prepareStatement(stmt1);
+            ps1.setString(1, student_id);
+            int rowsAffected = ps1.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Successfully Deleted!");
+
+            } else {
+                System.out.println("No records to delete");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+        }
+    }
+
+    public ResultSet studentInformation(String student_id) {
+        ResultSet rs;
+        PreparedStatement ps;
+        String stmt = "Select s.student_id, s.student_name, "
+                + "s.year_level, s.section, s.strand, "
+                + "a.contact_no, a.station, a.address,"
+                + "p.profile_picture, p.profile_name "
+                + "FROM students as s "
+                + "INNER JOIN add_info as a "
+                + "ON s.id = a.students_id "
+                + "INNER JOIN students_profile as p "
+                + "ON s.id = p.students_id "
+                + "WHERE s.student_id = ?";
+        try {
+            ps = this.conn.prepareStatement(stmt);
+            ps.setString(1, student_id);
+
+            rs = ps.executeQuery();
+
+            return rs;
+
+        } catch (SQLException e) {
+        }
+        return null;
+
+    }
+
+    public static void main(String[] args) throws SQLException, IOException {
         StudentsRepository std = new StudentsRepository();
     }
 }

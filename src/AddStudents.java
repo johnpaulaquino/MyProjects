@@ -2,7 +2,6 @@
 import database.StudentsRepository;
 import java.awt.Color;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import javax.swing.BorderFactory;
@@ -525,6 +524,7 @@ public class AddStudents extends javax.swing.JFrame {
                 //check if no error while adding the student in the database
                 if (isSuccessfullyAdded) {
                     JOptionPane.showMessageDialog(this, "Successfully added student!");
+                    clearTextInFields();
                 }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -589,6 +589,16 @@ public class AddStudents extends javax.swing.JFrame {
                 new AddStudents().setVisible(true);
             }
         });
+    }
+    public void clearTextInFields(){
+        tfStudentName.setText("");
+        tfAddress.setText("");
+        tfStation.setText("");
+        tfStudentId.setText("");
+        cbSection.setSelectedIndex(0);
+        tfStudentName.setText("");
+        tfContactNo.setText("");
+        lbFilePath.setText("");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

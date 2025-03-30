@@ -2,6 +2,9 @@
 import java.sql.Blob;
 import java.sql.ResultSet;
 import database.StudentsRepository;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,6 +13,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
 import utils.Utility;
@@ -18,15 +24,16 @@ import utils.Utility;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author vhalv
  */
 public class Tlobby extends javax.swing.JFrame {
-private Utility utils = new Utility();
-private StudentsRepository repo = new StudentsRepository();
-private int mouseX, mouseY;
+
+    private Utility utils = new Utility();
+    private StudentsRepository repo = new StudentsRepository();
+    private int mouseX, mouseY;
+    private Map<Integer, JTable> mapTable = new HashMap<>();
 
     public Tlobby() {
         initComponents();
@@ -34,6 +41,16 @@ private int mouseX, mouseY;
         sRecords.repaint();
         sRecords.revalidate();
         this.setGlassPane(sRecords);
+        mapTable.put(0, tbIctHope);
+        mapTable.put(1, tbIctLove);
+        mapTable.put(2, tbHumssLove);
+        mapTable.put(3, tbHumssHope);
+        mapTable.put(4, tbHumssFaith);
+        mapTable.put(5, tbAbmLove);
+        mapTable.put(6, tbStemHope);
+        
+        this.addListenersForAllTableInTabbed();
+
     }
 
     /**
@@ -46,13 +63,13 @@ private int mouseX, mouseY;
     private void initComponents() {
 
         jPopMenu = new javax.swing.JPopupMenu();
-        deleteStudent = new javax.swing.JMenuItem();
-        studentInfo = new javax.swing.JMenuItem();
+        jDeleteStudent = new javax.swing.JMenuItem();
+        jStudentInfo = new javax.swing.JMenuItem();
         sRecords = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         lblProfilePicture = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane = new javax.swing.JScrollPane();
         tblTimeInOut = new javax.swing.JTable();
         lbNameStd = new javax.swing.JLabel();
         lbStudentId = new javax.swing.JLabel();
@@ -98,25 +115,25 @@ private int mouseX, mouseY;
         jScrollPane8 = new javax.swing.JScrollPane();
         tbStemHope = new javax.swing.JTable();
 
-        deleteStudent.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        deleteStudent.setText("DELETE");
-        deleteStudent.setToolTipText("");
-        deleteStudent.addActionListener(new java.awt.event.ActionListener() {
+        jDeleteStudent.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jDeleteStudent.setText("DELETE");
+        jDeleteStudent.setToolTipText("");
+        jDeleteStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteStudentActionPerformed(evt);
+                jDeleteStudentActionPerformed(evt);
             }
         });
-        jPopMenu.add(deleteStudent);
-        deleteStudent.getAccessibleContext().setAccessibleName("Menu2");
+        jPopMenu.add(jDeleteStudent);
+        jDeleteStudent.getAccessibleContext().setAccessibleName("Menu2");
 
-        studentInfo.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        studentInfo.setText("ACCOUNT");
-        studentInfo.addActionListener(new java.awt.event.ActionListener() {
+        jStudentInfo.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jStudentInfo.setText("ACCOUNT");
+        jStudentInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                studentInfoActionPerformed(evt);
+                jStudentInfoActionPerformed(evt);
             }
         });
-        jPopMenu.add(studentInfo);
+        jPopMenu.add(jStudentInfo);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -159,7 +176,7 @@ private int mouseX, mouseY;
             }
         });
         tblTimeInOut.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tblTimeInOut);
+        jScrollPane.setViewportView(tblTimeInOut);
         if (tblTimeInOut.getColumnModel().getColumnCount() > 0) {
             tblTimeInOut.getColumnModel().getColumn(0).setResizable(false);
             tblTimeInOut.getColumnModel().getColumn(1).setResizable(false);
@@ -212,7 +229,7 @@ private int mouseX, mouseY;
                                     .addComponent(lbStudentId, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbYearlLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(sRecordsLayout.createSequentialGroup()
                                 .addGroup(sRecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(sRecordsLayout.createSequentialGroup()
@@ -237,7 +254,7 @@ private int mouseX, mouseY;
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(sRecordsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(sRecordsLayout.createSequentialGroup()
                         .addComponent(lblProfilePicture, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -454,16 +471,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbIctHope.setColumnSelectionAllowed(true);
         tbIctHope.getTableHeader().setReorderingAllowed(false);
-        tbIctHope.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tbIctHopeMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tbIctHopeMouseReleased(evt);
-            }
-        });
         test1.setViewportView(tbIctHope);
+        tbIctHope.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbIctHope.getColumnModel().getColumnCount() > 0) {
             tbIctHope.getColumnModel().getColumn(0).setResizable(false);
             tbIctHope.getColumnModel().getColumn(1).setResizable(false);
@@ -501,7 +512,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbIctLove.setColumnSelectionAllowed(true);
+        tbIctLove.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tbIctLove);
+        tbIctLove.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbIctLove.getColumnModel().getColumnCount() > 0) {
             tbIctLove.getColumnModel().getColumn(0).setResizable(false);
             tbIctLove.getColumnModel().getColumn(1).setResizable(false);
@@ -539,7 +553,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbHumssHope.setColumnSelectionAllowed(true);
+        tbHumssHope.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tbHumssHope);
+        tbHumssHope.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbHumssHope.getColumnModel().getColumnCount() > 0) {
             tbHumssHope.getColumnModel().getColumn(0).setResizable(false);
             tbHumssHope.getColumnModel().getColumn(1).setResizable(false);
@@ -576,7 +593,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbHumssLove.setColumnSelectionAllowed(true);
+        tbHumssLove.getTableHeader().setReorderingAllowed(false);
         jScrollPane5.setViewportView(tbHumssLove);
+        tbHumssLove.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbHumssLove.getColumnModel().getColumnCount() > 0) {
             tbHumssLove.getColumnModel().getColumn(0).setResizable(false);
             tbHumssLove.getColumnModel().getColumn(1).setResizable(false);
@@ -613,7 +633,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbHumssFaith.setColumnSelectionAllowed(true);
+        tbHumssFaith.getTableHeader().setReorderingAllowed(false);
         jScrollPane6.setViewportView(tbHumssFaith);
+        tbHumssFaith.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbHumssFaith.getColumnModel().getColumnCount() > 0) {
             tbHumssFaith.getColumnModel().getColumn(0).setResizable(false);
             tbHumssFaith.getColumnModel().getColumn(1).setResizable(false);
@@ -650,7 +673,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbAbmLove.setColumnSelectionAllowed(true);
+        tbAbmLove.getTableHeader().setReorderingAllowed(false);
         jScrollPane7.setViewportView(tbAbmLove);
+        tbAbmLove.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbAbmLove.getColumnModel().getColumnCount() > 0) {
             tbAbmLove.getColumnModel().getColumn(0).setResizable(false);
             tbAbmLove.getColumnModel().getColumn(1).setResizable(false);
@@ -687,7 +713,10 @@ private int mouseX, mouseY;
                 return canEdit [columnIndex];
             }
         });
+        tbStemHope.setColumnSelectionAllowed(true);
+        tbStemHope.getTableHeader().setReorderingAllowed(false);
         jScrollPane8.setViewportView(tbStemHope);
+        tbStemHope.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbStemHope.getColumnModel().getColumnCount() > 0) {
             tbStemHope.getColumnModel().getColumn(0).setResizable(false);
             tbStemHope.getColumnModel().getColumn(1).setResizable(false);
@@ -746,7 +775,7 @@ private int mouseX, mouseY;
     }//GEN-LAST:event_barcodeActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-       sRecords.setVisible(false);
+        sRecords.setVisible(false);
 
     }//GEN-LAST:event_btnExitActionPerformed
 
@@ -756,103 +785,79 @@ private int mouseX, mouseY;
 
     private void studentInfoTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_studentInfoTabStateChanged
         utils.refreshTable(studentInfoTab,
-              repo,
-              tbIctHope,
-              tbIctLove,
-              tbHumssHope,
-              tbHumssLove,
-              tbHumssFaith,
-              tbAbmLove,
-              tbStemHope);
+                repo,
+                tbIctHope,
+                tbIctLove,
+                tbHumssHope,
+                tbHumssLove,
+                tbHumssFaith,
+                tbAbmLove,
+                tbStemHope);
+        
+        this.addListenersForAllTableInTabbed();
+        
+            
+           
     }//GEN-LAST:event_studentInfoTabStateChanged
 
-    private void tbIctHopeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbIctHopeMouseReleased
-    
-        
-    }//GEN-LAST:event_tbIctHopeMouseReleased
+    private void jDeleteStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDeleteStudentActionPerformed
+        int option = JOptionPane.showConfirmDialog(this, "Do you want to delete this?");
+        int selectedTab = studentInfoTab.getSelectedIndex();
+        int selectedRow = mapTable.get(selectedTab).getSelectedRow();
+        String studentId = (String) mapTable.get(selectedTab).getValueAt(selectedRow, 0);
 
-    private void tbIctHopeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbIctHopeMousePressed
-           if (evt.isPopupTrigger()) {
-        int row = tbIctHope.rowAtPoint(evt.getPoint());
-        if (row >= 0) {
-            tbIctHope.setRowSelectionInterval(row, row);
-        }
-        jPopMenu.show(evt.getComponent(), evt.getX(), evt.getY()); 
-           }
- 
+        repo.deleteStudents(studentId);
 
-        
-    }//GEN-LAST:event_tbIctHopeMousePressed
+        utils.refreshTable(studentInfoTab,
+                repo,
+                tbIctHope,
+                tbIctLove,
+                tbHumssHope,
+                tbHumssLove,
+                tbHumssFaith,
+                tbAbmLove,
+                tbStemHope);
 
-    private void deleteStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStudentActionPerformed
-      int option = JOptionPane.showConfirmDialog(this, "Do you want to delete this?");
-      int selectedRow = tbIctHope.getSelectedRow();  
-      String studentId = (String) tbIctHope.getValueAt(selectedRow, 0);
-      
-      repo.deleteStudents(studentId);
-      
-      utils.refreshTable(studentInfoTab,
-              repo,
-              tbIctHope,
-              tbIctLove,
-              tbHumssHope,
-              tbHumssLove,
-              tbHumssFaith,
-              tbAbmLove,
-              tbStemHope);
-      
-        
-    }//GEN-LAST:event_deleteStudentActionPerformed
 
-    private void studentInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentInfoActionPerformed
+    }//GEN-LAST:event_jDeleteStudentActionPerformed
 
-      int selectedTab = studentInfoTab.getSelectedIndex();
-      
-        Map<Integer, JTable> mapTable = new HashMap<>();
-        
-        mapTable.put(0, tbIctHope);
-        mapTable.put(1, tbIctLove);
-        mapTable.put(2, tbHumssLove);
-        mapTable.put(3, tbHumssHope);
-        mapTable.put(4, tbHumssFaith);
-        mapTable.put(5, tbAbmLove);
-        mapTable.put(6, tbStemHope);
-        
-        int selectedRow = mapTable.get(selectedTab).getSelectedRow();  
-        
-      String studentId = (String) mapTable.get(selectedRow).getValueAt(selectedRow, 0);
-        System.out.println(studentId);
-        
-      ResultSet rs = repo.studentInformation(studentId);
+    private void jStudentInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStudentInfoActionPerformed
+
+        int selectedTab = studentInfoTab.getSelectedIndex();
+
+        int selectedRow = mapTable.get(selectedTab).getSelectedRow();
+
+        String studentId = (String) mapTable.get(selectedTab).getValueAt(selectedRow, 0);
+
+        ResultSet rs = repo.studentInformation(studentId);
         System.out.println(selectedTab);
-      sRecords.setVisible(true);
-      sRecords.repaint();
-      sRecords.revalidate();
-      
-     
-    try {
-        if(rs.next()){
-            String stdyearInfo = rs.getString("s.strand") +" "
-                    + rs.getString("s.year_level")+ " "+rs.getString("s.section");
-                    
-            lbNameStd.setText(rs.getString("s.student_name"));
-            lbStudentId.setText(rs.getString("s.student_id"));
-            lbAddressStd.setText(rs.getString("a.address"));
-            lbContactStd.setText(rs.getString("a.contact_no"));
-            lbYearlLevel.setText(stdyearInfo);
-            lbStationStd.setText(rs.getString("a.station"));
-            
-            Blob blob = rs.getBlob("p.profile_picture");
-            try {
-                utils.setImageInLabel(lblProfilePicture, blob);
-            } catch (IOException ex) {
-                Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
+        sRecords.setVisible(true);
+        sRecords.repaint();
+        sRecords.revalidate();
+
+        try {
+            if (rs.next()) {
+                String stdyearInfo = rs.getString("s.strand") + " "
+                        + rs.getString("s.year_level") + " " + rs.getString("s.section");
+
+                lbNameStd.setText(rs.getString("s.student_name"));
+                lbStudentId.setText(rs.getString("s.student_id"));
+                lbAddressStd.setText(rs.getString("a.address"));
+                lbContactStd.setText(rs.getString("a.contact_no"));
+                lbYearlLevel.setText(stdyearInfo);
+                lbStationStd.setText(rs.getString("a.station"));
+
+                Blob blob = rs.getBlob("p.profile_picture");
+                try {
+                    utils.setImageInLabel(lblProfilePicture, blob);
+                } catch (IOException ex) {
+                    Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    }//GEN-LAST:event_studentInfoActionPerformed
+    }//GEN-LAST:event_jStudentInfoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -889,13 +894,49 @@ private int mouseX, mouseY;
         });
     }
 
+    private void checkForPopup(MouseEvent e, JTable table) {
+        if (e.isPopupTrigger()) {
+            int row = table.rowAtPoint(e.getPoint());
+            if (row >= 0) {
+                table.setRowSelectionInterval(row, row);
+            }
+            jPopMenu.show(e.getComponent(), e.getX(), e.getY());
+        }
+    }
+    
+    public void addListenersForAllTableInTabbed(){
+        int selectIndex = studentInfoTab.getSelectedIndex();
+        
+        JTable selectedTable = mapTable.get(selectIndex);
+        
+        if (selectedTable != null) {
+            // Remove existing listeners to prevent duplicates
+            for (MouseListener ml : selectedTable.getMouseListeners()) {
+                selectedTable.removeMouseListener(ml);
+            }
+             selectedTable.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    checkForPopup(e, selectedTable);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    checkForPopup(e, selectedTable);
+                }
+            });
+        }
+    }
+
+    // Apply listener to all tables in the tabbed pane
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel P1;
     private javax.swing.JButton addstudent;
     private javax.swing.JButton barcode;
     private javax.swing.JButton btnExit;
-    private javax.swing.JMenuItem deleteStudent;
     private javax.swing.JButton jButton1;
+    private javax.swing.JMenuItem jDeleteStudent;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -909,13 +950,14 @@ private int mouseX, mouseY;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPopupMenu jPopMenu;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JMenuItem jStudentInfo;
     private javax.swing.JLabel lbAddressStd;
     private javax.swing.JLabel lbContactStd;
     private javax.swing.JLabel lbNameStd;
@@ -931,7 +973,6 @@ private int mouseX, mouseY;
     private javax.swing.JPanel pIctLove;
     private javax.swing.JPanel pStemHope;
     private javax.swing.JPanel sRecords;
-    private javax.swing.JMenuItem studentInfo;
     private javax.swing.JTabbedPane studentInfoTab;
     private javax.swing.JTable tbAbmLove;
     private javax.swing.JTable tbHumssFaith;

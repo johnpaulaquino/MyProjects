@@ -32,5 +32,8 @@ public class Connector {
         }
         
     }
+    public static void main(String[] args) {
+        new Connector().myConn();
+    }
 }
   

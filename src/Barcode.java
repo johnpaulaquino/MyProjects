@@ -1,19 +1,51 @@
+
+import database.StudentsRepository;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import utils.Utility;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author vhalv
  */
 public class Barcode extends javax.swing.JFrame {
 
+    private Utility util;
+    private StudentsRepository sRepo;
+    private Date date;
+    private LocalTime timeInOut;
+
     /**
      * Creates new form Barcode
      */
     public Barcode() {
         initComponents();
+        txtStdId.requestFocus();
+        util = new Utility();
+        sRepo = new StudentsRepository();
+        setTextFields();
+        this.setDateAndTime();
+
     }
 
     /**
@@ -31,9 +63,12 @@ public class Barcode extends javax.swing.JFrame {
         jPanel9 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        lblGsection = new javax.swing.JLabel();
+        txtStdId = new javax.swing.JTextField();
+        txtGsection = new javax.swing.JTextField();
+        lblDateTime = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
+        lblProfileImage = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -44,11 +79,15 @@ public class Barcode extends javax.swing.JFrame {
         barcode = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        lblName = new javax.swing.JLabel();
+        lblStation = new javax.swing.JLabel();
+        lblAddress = new javax.swing.JLabel();
+        btnTimeOut = new javax.swing.JButton();
+        btnTimeIn = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
+        txtName = new javax.swing.JTextField();
+        txtStation = new javax.swing.JTextField();
+        txtAddress = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,7 +141,7 @@ public class Barcode extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(P1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 665, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,8 +155,12 @@ public class Barcode extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
         jLabel7.setText("Student ID:");
 
-        jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel8.setText("Grade / Section:");
+        lblGsection.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        lblGsection.setText("Grade / Section:");
+
+        txtGsection.setEditable(false);
+
+        lblDateTime.setText("00:00:00 AM");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -125,24 +168,38 @@ public class Barcode extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblGsection, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtGsection, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtStdId, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(140, 140, 140)
+                .addComponent(lblDateTime, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtStdId, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblDateTime, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblGsection, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtGsection, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(232, 233, 215));
 
-        jLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        lblProfileImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -150,14 +207,14 @@ public class Barcode extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(62, Short.MAX_VALUE)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblProfileImage, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblProfileImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -260,36 +317,60 @@ public class Barcode extends javax.swing.JFrame {
 
         jPanel6.setBackground(new java.awt.Color(232, 233, 215));
 
-        jLabel9.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel9.setText("Name:");
+        lblName.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        lblName.setText("Name:");
 
-        jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel10.setText("Station:");
+        lblStation.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        lblStation.setText("Station:");
 
-        jLabel11.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel11.setText("Address:");
+        lblAddress.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        lblAddress.setText("Address:");
 
-        jButton7.setBackground(new java.awt.Color(81, 81, 81));
-        jButton7.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setText("TIME-OUT");
-        jButton7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnTimeOut.setBackground(new java.awt.Color(81, 81, 81));
+        btnTimeOut.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        btnTimeOut.setForeground(new java.awt.Color(255, 255, 255));
+        btnTimeOut.setText("TIME-OUT");
+        btnTimeOut.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnTimeOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7jButton1ActionPerformed(evt);
+                btnTimeOutjButton1ActionPerformed(evt);
             }
         });
 
-        jButton8.setBackground(new java.awt.Color(81, 81, 81));
-        jButton8.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jButton8.setForeground(new java.awt.Color(255, 255, 255));
-        jButton8.setText("TIME-IN");
-        jButton8.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btnTimeIn.setBackground(new java.awt.Color(81, 81, 81));
+        btnTimeIn.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
+        btnTimeIn.setForeground(new java.awt.Color(255, 255, 255));
+        btnTimeIn.setText("TIME-IN");
+        btnTimeIn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnTimeIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8jButton1ActionPerformed(evt);
+                btnTimeInjButton1ActionPerformed(evt);
             }
         });
+
+        btnReset.setBackground(new java.awt.Color(81, 81, 81));
+        btnReset.setFont(new java.awt.Font("URW Gothic", 1, 18)); // NOI18N
+        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setText("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
+
+        txtName.setEditable(false);
+
+        txtStation.setEditable(false);
+        txtStation.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtStationKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtStationKeyTyped(evt);
+            }
+        });
+
+        txtAddress.setEditable(false);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -297,32 +378,46 @@ public class Barcode extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(61, 61, 61)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblStation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(lblName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtStation, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(50, 50, 50)
+                        .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addComponent(btnTimeOut, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
-                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69))
+                .addComponent(btnTimeIn, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(848, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnTimeOut, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTimeIn, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(10, Short.MAX_VALUE))
+                    .addComponent(lblName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblStation, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtStation, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(lblAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -351,7 +446,7 @@ public class Barcode extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 57, Short.MAX_VALUE)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -390,15 +485,50 @@ public class Barcode extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_barcodeActionPerformed
 
-    private void jButton7jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7jButton1ActionPerformed
+    private void btnTimeOutjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeOutjButton1ActionPerformed
         Tlobby record = new Tlobby();
+        timeInOut = LocalTime.now();
+
+        String userId = txtStdId.getText();
+        HashMap<String, String> data = sRepo.studentGetTimeIn(userId);
+        LocalTime timeIn = LocalTime.parse(data.get("time_in"));
+
+        String totalRendered = util.totalRenderedTime(timeIn, timeInOut);// Calculate the total rendered
+
+        sRepo.studentTimeOut(userId, timeInOut, totalRendered);
+
         record.show();
         dispose();
-    }//GEN-LAST:event_jButton7jButton1ActionPerformed
+    }//GEN-LAST:event_btnTimeOutjButton1ActionPerformed
 
-    private void jButton8jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8jButton1ActionPerformed
+    private void btnTimeInjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeInjButton1ActionPerformed
+        String studentId = txtStdId.getText();
+        date = new Date();
+        timeInOut = LocalTime.now();
+
+        sRepo.studentTimeIn(studentId, date, timeInOut);
+        btnTimeOut.setEnabled(true);
+    }//GEN-LAST:event_btnTimeInjButton1ActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+
+        txtStdId.setText("");
+        txtAddress.setText("");
+        txtGsection.setText("");
+        txtName.setText("");
+        txtStation.setText("");
+        lblProfileImage.setIcon(new ImageIcon());
+        txtStdId.setEditable(true);
+        txtStdId.requestFocus();
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void txtStationKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStationKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8jButton1ActionPerformed
+    }//GEN-LAST:event_txtStationKeyPressed
+
+    private void txtStationKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStationKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtStationKeyTyped
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -431,25 +561,107 @@ public class Barcode extends javax.swing.JFrame {
             }
         });
     }
+    boolean flag = false;
+
+    Timer timer = new Timer(500, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (flag) {
+                txtStdId.setEditable(false);
+                timer.stop();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No user found!");
+
+                txtStdId.setText("");
+                txtStdId.setEditable(true);
+                timer.stop();
+            }
+
+        }
+    });
+
+    private void setTextFields() {
+
+        try {
+            txtStdId.getDocument().addDocumentListener(new DocumentListener() {
+
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+
+                    try {
+                        String student_id = txtStdId.getText();
+
+                        ResultSet rs = sRepo.studentInformation(student_id);
+                        if (rs.next()) {
+                            flag = true;
+                            String stdyearInfo = rs.getString("s.year_level") + " " + rs.getString("s.section");
+                            txtName.setText(rs.getString("s.student_name"));
+                            txtGsection.setText(stdyearInfo);
+                            txtAddress.setText(rs.getString("a.address"));
+                            txtStation.setText(rs.getString("a.station"));
+
+                            Blob blob = rs.getBlob("p.profile_picture");
+                            try {
+                                util.setImageInLabel(lblProfileImage, blob);
+
+                            } catch (IOException ex) {
+                                Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (!flag) {
+                        txtStdId.setEditable(true);
+                    }
+                    timer.start();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    txtStdId.setEditable(false);
+                    txtAddress.setText("");
+                    txtGsection.setText("");
+                    txtName.setText("");
+                    lblProfileImage.setIcon(new ImageIcon());
+                    txtStation.setText("");
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+
+                }
+            });
+
+        } catch (Exception e) {
+        }
+
+    }
+
+    private void setDateAndTime() {
+        new Timer(0, (e) -> {
+            DateTimeFormatter dFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+            LocalDateTime date = LocalDateTime.now();
+            lblDateTime.setText(dFormatter.format(date));
+
+        }).start();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel P1;
     private javax.swing.JButton barcode;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnTimeIn;
+    private javax.swing.JButton btnTimeOut;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -457,5 +669,16 @@ public class Barcode extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JLabel lblAddress;
+    private javax.swing.JLabel lblDateTime;
+    private javax.swing.JLabel lblGsection;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblProfileImage;
+    private javax.swing.JLabel lblStation;
+    private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextField txtGsection;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtStation;
+    private javax.swing.JTextField txtStdId;
     // End of variables declaration//GEN-END:variables
 }
