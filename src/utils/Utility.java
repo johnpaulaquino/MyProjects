@@ -155,14 +155,21 @@ public class Utility {
             ResultSet rs = repo.getStudentsRecords(strand, yearLevel, section);
             DefaultTableModel dft = (DefaultTableModel) tableMap.get(selectedIndex).getModel();
             dft.setRowCount(0);
+            String totalRendered = "";
             while (rs.next()) {
+                if (rs.getString("total_rendered") == null) {
+                    totalRendered = 0 + " Hour";
+                } else {
+                    totalRendered = rs.getString("total_rendered") + " Hours";
+
+                }
                 this.setValueInTable(
                         tableMap.get(selectedIndex),
                         rs.getString("student_id"),
                         rs.getString("student_name"),
                         rs.getString("address"),
                         rs.getString("station"),
-                        section,
+                        totalRendered,
                         count);
             }
 
@@ -193,7 +200,7 @@ public class Utility {
     }
 
     public String totalRenderedTime(LocalTime timeIn, LocalTime timeOut) {
-        
+
         String totalHours = "";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h a");
 
@@ -205,9 +212,7 @@ public class Utility {
     }
 
     public static void main(String[] args) {
-        LocalTime timein = LocalTime.of(0,0);
-        LocalTime timeout = LocalTime.of(0, 0, 0);
-        System.out.println(new Utility().totalRenderedTime(timein, timeout));
+       
     }
 
 }

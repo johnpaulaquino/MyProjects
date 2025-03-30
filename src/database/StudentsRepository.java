@@ -108,7 +108,7 @@ public class StudentsRepository {
 
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("An error Occurred " + e.getMessage());
         }
 
         return studentIdFromDb;
@@ -127,7 +127,7 @@ public class StudentsRepository {
             ps1.setTime(3, Time.valueOf(timeIn));
             ps1.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("An error occurred " + e.getMessage());
         }
     }
 
@@ -142,7 +142,7 @@ public class StudentsRepository {
             ps1.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("An error occured " + e.getMessage());
         }
     }
 
@@ -158,25 +158,28 @@ public class StudentsRepository {
                     return data;
                 }
             } catch (Exception e) {
+                System.out.println("An error occurred " + e.getMessage());
             }
         } catch (Exception e) {
+            System.out.println("An error occurred " + e.getMessage());
         }
 
         return null;
     }
-    
-    public ResultSet getStudentTracker(String userId){
-        String stmt = "Select time_out, time_in, date_in, Max(total_rendered) as t_rendered "
+
+    public ResultSet getStudentTracker(String userId) {
+        String stmt = "Select date_in, time_in, time_out "
                 + "From students_tracker "
                 + "where student_id = ?";
         try {
             var ps1 = conn.prepareStatement(stmt);
+            ps1.setString(1, userId);
             var rs = ps1.executeQuery();
             return rs;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("An error occurred " + e.getMessage());
         }
-        return  null;
+        return null;
     }
 
     public boolean addStudents(
@@ -227,19 +230,31 @@ public class StudentsRepository {
         } finally {
         }
     }
+//
+//    public String getTotalRenderedTime() {
+//        String totalRendered = "";
+//        String stmt = "Select Max(total_rendered) as total From "
+//                + "Students_tracker "
+//                + "Group by student_id";
+//        
+//        return totalRendered;
+//    }
 
     public ResultSet getStudentsRecords(String strand, int yearLevel, String section) {
         PreparedStatement ps1;
         ResultSet rs;
         String stmt1 = "SELECT s.id, s.student_id, s.student_name,"
                 + "s.year_level, s.section, s.strand,a.contact_no, a.address, "
-                + "a.station "
+                + "a.station, MAX(tr.total_rendered) as total_rendered "
                 + "FROM students as s "
                 + "INNER JOIN add_info as a "
                 + "ON s.id = a.students_id "
+                + "Left join students_tracker tr "
+                + "ON s.student_id = tr.student_id "
                 + "WHERE s.year_level = ? "
                 + "AND s.section = ? "
-                + "AND s.strand = ?";
+                + "AND s.strand = ? "
+                + "Group by s.student_id";
         try {
             ps1 = this.conn.prepareStatement(stmt1);
 
@@ -252,6 +267,7 @@ public class StudentsRepository {
             return rs;
 
         } catch (SQLException e) {
+            System.out.println("An error occurred " + e.getMessage());
         }
         return null;
     }
@@ -283,6 +299,7 @@ public class StudentsRepository {
                 return count;
             }
         } catch (SQLException e) {
+            System.out.println("An error occurred " + e.getMessage());
         } finally {
         }
 
@@ -301,6 +318,7 @@ public class StudentsRepository {
             int rowsAffected = ps1.executeUpdate();
 
             if (rowsAffected > 0) {
+
                 System.out.println("Successfully Deleted!");
 
             } else {
@@ -308,7 +326,7 @@ public class StudentsRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("An error occurred " + e.getMessage());
         } finally {
         }
     }
@@ -335,12 +353,10 @@ public class StudentsRepository {
             return rs;
 
         } catch (SQLException e) {
+            System.out.println("An error occurred " + e.getMessage());
         }
         return null;
 
     }
 
-    public static void main(String[] args) throws SQLException, IOException {
-        StudentsRepository std = new StudentsRepository();
-    }
 }

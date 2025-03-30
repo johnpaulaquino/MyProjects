@@ -7,16 +7,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import utils.Utility;
 
@@ -48,7 +50,7 @@ public class Tlobby extends javax.swing.JFrame {
         mapTable.put(4, tbHumssFaith);
         mapTable.put(5, tbAbmLove);
         mapTable.put(6, tbStemHope);
-        
+
         this.addListenersForAllTableInTabbed();
 
     }
@@ -471,10 +473,8 @@ public class Tlobby extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tbIctHope.setColumnSelectionAllowed(true);
         tbIctHope.getTableHeader().setReorderingAllowed(false);
         test1.setViewportView(tbIctHope);
-        tbIctHope.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbIctHope.getColumnModel().getColumnCount() > 0) {
             tbIctHope.getColumnModel().getColumn(0).setResizable(false);
             tbIctHope.getColumnModel().getColumn(1).setResizable(false);
@@ -486,7 +486,7 @@ public class Tlobby extends javax.swing.JFrame {
         pIctHope.setLayout(pIctHopeLayout);
         pIctHopeLayout.setHorizontalGroup(
             pIctHopeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(test1, javax.swing.GroupLayout.DEFAULT_SIZE, 1859, Short.MAX_VALUE)
+            .addComponent(test1, javax.swing.GroupLayout.DEFAULT_SIZE, 1013, Short.MAX_VALUE)
         );
         pIctHopeLayout.setVerticalGroup(
             pIctHopeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -512,10 +512,8 @@ public class Tlobby extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tbIctLove.setColumnSelectionAllowed(true);
         tbIctLove.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tbIctLove);
-        tbIctLove.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbIctLove.getColumnModel().getColumnCount() > 0) {
             tbIctLove.getColumnModel().getColumn(0).setResizable(false);
             tbIctLove.getColumnModel().getColumn(1).setResizable(false);
@@ -546,21 +544,20 @@ public class Tlobby extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tbHumssHope.setColumnSelectionAllowed(true);
         tbHumssHope.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tbHumssHope);
-        tbHumssHope.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbHumssHope.getColumnModel().getColumnCount() > 0) {
             tbHumssHope.getColumnModel().getColumn(0).setResizable(false);
             tbHumssHope.getColumnModel().getColumn(1).setResizable(false);
             tbHumssHope.getColumnModel().getColumn(2).setResizable(false);
+            tbHumssHope.getColumnModel().getColumn(3).setResizable(false);
         }
 
         javax.swing.GroupLayout pHumsHopeLayout = new javax.swing.GroupLayout(pHumsHope);
@@ -586,21 +583,20 @@ public class Tlobby extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tbHumssLove.setColumnSelectionAllowed(true);
         tbHumssLove.getTableHeader().setReorderingAllowed(false);
         jScrollPane5.setViewportView(tbHumssLove);
-        tbHumssLove.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbHumssLove.getColumnModel().getColumnCount() > 0) {
             tbHumssLove.getColumnModel().getColumn(0).setResizable(false);
             tbHumssLove.getColumnModel().getColumn(1).setResizable(false);
             tbHumssLove.getColumnModel().getColumn(2).setResizable(false);
+            tbHumssLove.getColumnModel().getColumn(3).setResizable(false);
         }
 
         javax.swing.GroupLayout pHumssLoveLayout = new javax.swing.GroupLayout(pHumssLove);
@@ -626,21 +622,20 @@ public class Tlobby extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tbHumssFaith.setColumnSelectionAllowed(true);
         tbHumssFaith.getTableHeader().setReorderingAllowed(false);
         jScrollPane6.setViewportView(tbHumssFaith);
-        tbHumssFaith.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbHumssFaith.getColumnModel().getColumnCount() > 0) {
             tbHumssFaith.getColumnModel().getColumn(0).setResizable(false);
             tbHumssFaith.getColumnModel().getColumn(1).setResizable(false);
             tbHumssFaith.getColumnModel().getColumn(2).setResizable(false);
+            tbHumssFaith.getColumnModel().getColumn(3).setResizable(false);
         }
 
         javax.swing.GroupLayout pHumssFaithLayout = new javax.swing.GroupLayout(pHumssFaith);
@@ -666,21 +661,20 @@ public class Tlobby extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tbAbmLove.setColumnSelectionAllowed(true);
         tbAbmLove.getTableHeader().setReorderingAllowed(false);
         jScrollPane7.setViewportView(tbAbmLove);
-        tbAbmLove.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbAbmLove.getColumnModel().getColumnCount() > 0) {
             tbAbmLove.getColumnModel().getColumn(0).setResizable(false);
             tbAbmLove.getColumnModel().getColumn(1).setResizable(false);
             tbAbmLove.getColumnModel().getColumn(2).setResizable(false);
+            tbAbmLove.getColumnModel().getColumn(3).setResizable(false);
         }
 
         javax.swing.GroupLayout pAbmLoveLayout = new javax.swing.GroupLayout(pAbmLove);
@@ -713,10 +707,8 @@ public class Tlobby extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tbStemHope.setColumnSelectionAllowed(true);
         tbStemHope.getTableHeader().setReorderingAllowed(false);
         jScrollPane8.setViewportView(tbStemHope);
-        tbStemHope.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (tbStemHope.getColumnModel().getColumnCount() > 0) {
             tbStemHope.getColumnModel().getColumn(0).setResizable(false);
             tbStemHope.getColumnModel().getColumn(1).setResizable(false);
@@ -793,11 +785,10 @@ public class Tlobby extends javax.swing.JFrame {
                 tbHumssFaith,
                 tbAbmLove,
                 tbStemHope);
-        
+
         this.addListenersForAllTableInTabbed();
-        
-            
-           
+
+
     }//GEN-LAST:event_studentInfoTabStateChanged
 
     private void jDeleteStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDeleteStudentActionPerformed
@@ -830,7 +821,6 @@ public class Tlobby extends javax.swing.JFrame {
         String studentId = (String) mapTable.get(selectedTab).getValueAt(selectedRow, 0);
 
         ResultSet rs = repo.studentInformation(studentId);
-        System.out.println(selectedTab);
         sRecords.setVisible(true);
         sRecords.repaint();
         sRecords.revalidate();
@@ -854,6 +844,7 @@ public class Tlobby extends javax.swing.JFrame {
                     Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            addTimeInOutInStudentsInfo(studentId);
         } catch (SQLException ex) {
             Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -903,18 +894,18 @@ public class Tlobby extends javax.swing.JFrame {
             jPopMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
-    
-    public void addListenersForAllTableInTabbed(){
+
+    public void addListenersForAllTableInTabbed() {
         int selectIndex = studentInfoTab.getSelectedIndex();
-        
+
         JTable selectedTable = mapTable.get(selectIndex);
-        
+
         if (selectedTable != null) {
             // Remove existing listeners to prevent duplicates
             for (MouseListener ml : selectedTable.getMouseListeners()) {
                 selectedTable.removeMouseListener(ml);
             }
-             selectedTable.addMouseListener(new MouseAdapter() {
+            selectedTable.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     checkForPopup(e, selectedTable);
@@ -925,6 +916,34 @@ public class Tlobby extends javax.swing.JFrame {
                     checkForPopup(e, selectedTable);
                 }
             });
+        }
+    }
+
+    private void addTimeInOutInStudentsInfo(String userId) {
+        try (ResultSet rs = repo.getStudentTracker(userId)) {
+            DefaultTableModel dft = (DefaultTableModel) tblTimeInOut.getModel();
+
+            dft.setRowCount(0);
+            SimpleDateFormat dateForrmatter = new SimpleDateFormat("EE, MMM dd, yyyy");
+            DateTimeFormatter timeForrmatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+
+            while (rs.next()) {
+               
+                Date dateIn = rs.getDate("date_in");
+                String dateFormatted = dateForrmatter.format(dateIn);
+                LocalTime timeIn = rs.getTime("time_in").toLocalTime();
+                LocalTime timeout = rs.getTime("time_out").toLocalTime();
+                
+                String timeInFormatted = timeForrmatter.format(timeIn);// format time
+                String timeOutFormatted = timeForrmatter.format(timeout);
+               
+                dft.addRow(new Object[]{
+                    dateFormatted, timeInFormatted, timeOutFormatted
+                }
+                );
+
+            }
+        } catch (Exception e) {
         }
     }
 
