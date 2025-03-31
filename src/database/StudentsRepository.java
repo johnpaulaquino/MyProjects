@@ -118,43 +118,66 @@ public class StudentsRepository {
             String studentId,
             java.util.Date todayDate,
             LocalTime timeIn) {
+
         String stmt = "INSERT INTO students_tracker (student_id, date_in, time_in) "
                 + "Values (?,?,?)";
 
         try (var ps1 = conn.prepareStatement(stmt)) {
+            
             ps1.setString(1, studentId);
             ps1.setDate(2, new Date(todayDate.getTime()));
+            
             ps1.setTime(3, Time.valueOf(timeIn));
-            ps1.executeUpdate();
+            int row = ps1.executeUpdate();
+            
+            if(row > 0){
+                 System.out.println("Inserte");
+            }else{
+                System.out.println("Failed to insert");
+            }
+           
         } catch (Exception e) {
             System.out.println("An error occurred " + e.getMessage());
         }
     }
 
-    public void studentTimeOut(String studentId, LocalTime timeout, String totalRendered) {
+    public boolean studentTimeOut(String studentId, LocalTime timeout, String totalRendered) {
         String stmt = "UPdate students_tracker set time_out = ?, total_rendered = ?"
-                + " Where student_id = ?";
+                + " Where student_id = ? and date_in = curdate() ";
+
         try (var ps1 = conn.prepareStatement(stmt)) {
             ps1.setTime(1, Time.valueOf(timeout));
             ps1.setString(2, totalRendered);
             ps1.setString(3, studentId);
 
-            ps1.executeUpdate();
+            int row = ps1.executeUpdate();
+            if (row > 0) {
+                return true;
+            }
 
         } catch (Exception e) {
             System.out.println("An error occured " + e.getMessage());
         }
+        return false;
     }
 
     public HashMap<String, String> studentGetTimeIn(String userId) {
-        String stmt = "Select time_in From students_tracker "
-                + "Where student_id = ? ";
+        /**
+         * Retrieve the time in of the student via student_id and date today and
+         * it will use this to calculate the total rendered time
+         */
+        String stmt = "Select time_in, time_out From students_tracker "
+                + "Where student_id = ? and date_in = curdate()";
         HashMap<String, String> data = new HashMap<String, String>();
         try (var ps1 = conn.prepareStatement(stmt)) {
             ps1.setString(1, userId);
             try (var rs = ps1.executeQuery()) {
                 if (rs.next()) {
                     data.put("time_in", rs.getTime("time_in").toString());
+                    if (rs.getTime("time_out") != null) {
+                        data.put("time_out", rs.getTime("time_out").toString());
+                    }
+
                     return data;
                 }
             } catch (Exception e) {
@@ -230,22 +253,13 @@ public class StudentsRepository {
         } finally {
         }
     }
-//
-//    public String getTotalRenderedTime() {
-//        String totalRendered = "";
-//        String stmt = "Select Max(total_rendered) as total From "
-//                + "Students_tracker "
-//                + "Group by student_id";
-//        
-//        return totalRendered;
-//    }
 
     public ResultSet getStudentsRecords(String strand, int yearLevel, String section) {
         PreparedStatement ps1;
         ResultSet rs;
         String stmt1 = "SELECT s.id, s.student_id, s.student_name,"
                 + "s.year_level, s.section, s.strand,a.contact_no, a.address, "
-                + "a.station, MAX(tr.total_rendered) as total_rendered "
+                + "a.station, CAST(SUM(tr.total_rendered) as char) as total_rendered "
                 + "FROM students as s "
                 + "INNER JOIN add_info as a "
                 + "ON s.id = a.students_id "
@@ -270,16 +284,6 @@ public class StudentsRepository {
             System.out.println("An error occurred " + e.getMessage());
         }
         return null;
-    }
-
-    public void closeConnection() {
-        try {
-            if (this.conn != null && !this.conn.isClosed()) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public int countValues(String strand, String section, int yearLevel) {
@@ -337,12 +341,15 @@ public class StudentsRepository {
         String stmt = "Select s.student_id, s.student_name, "
                 + "s.year_level, s.section, s.strand, "
                 + "a.contact_no, a.station, a.address,"
-                + "p.profile_picture, p.profile_name "
+                + "p.profile_picture, p.profile_name, "
+                + "tr.date_in, tr.time_in, tr.time_out "
                 + "FROM students as s "
                 + "INNER JOIN add_info as a "
                 + "ON s.id = a.students_id "
                 + "INNER JOIN students_profile as p "
                 + "ON s.id = p.students_id "
+                + "LEFT JOIN students_tracker tr "
+                + "ON s.student_id = tr.student_id "
                 + "WHERE s.student_id = ?";
         try {
             ps = this.conn.prepareStatement(stmt);

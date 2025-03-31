@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -44,7 +45,6 @@ public class Barcode extends javax.swing.JFrame {
         util = new Utility();
         sRepo = new StudentsRepository();
         setTextFields();
-        this.setDateAndTime();
 
     }
 
@@ -331,6 +331,7 @@ public class Barcode extends javax.swing.JFrame {
         btnTimeOut.setForeground(new java.awt.Color(255, 255, 255));
         btnTimeOut.setText("TIME-OUT");
         btnTimeOut.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnTimeOut.setEnabled(false);
         btnTimeOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTimeOutjButton1ActionPerformed(evt);
@@ -491,13 +492,20 @@ public class Barcode extends javax.swing.JFrame {
 
         String userId = txtStdId.getText();
         HashMap<String, String> data = sRepo.studentGetTimeIn(userId);
+
         LocalTime timeIn = LocalTime.parse(data.get("time_in"));
 
         String totalRendered = util.totalRenderedTime(timeIn, timeInOut);// Calculate the total rendered
 
-        sRepo.studentTimeOut(userId, timeInOut, totalRendered);
+        if (data.get("time_out") != null) {
+            JOptionPane.showMessageDialog(this, "You already time out at " + data.get("time_in"));
+        } else {
+            sRepo.studentTimeOut(userId, timeInOut, totalRendered);
 
-        record.show();
+        }
+        btnTimeOut.setEnabled(true);
+        record.setVisible(true);
+        record.revalidate();
         dispose();
     }//GEN-LAST:event_btnTimeOutjButton1ActionPerformed
 
@@ -506,8 +514,36 @@ public class Barcode extends javax.swing.JFrame {
         date = new Date();
         timeInOut = LocalTime.now();
 
-        sRepo.studentTimeIn(studentId, date, timeInOut);
-        btnTimeOut.setEnabled(true);
+        try (var rs = sRepo.studentInformation(studentId)) {
+
+            if (rs.next()) {
+
+                btnTimeOut.setEnabled(true);
+                btnReset.setEnabled(false);
+                btnTimeIn.setEnabled(false);
+                System.out.println(rs.getDate("date_in"));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (rs.getDate("date_in") != null) { // Check if the date in is not null
+                    if (rs.getDate("date_in").toString().equals(sdf.format(new Date()))) {// then check if it is currenct date 
+                        JOptionPane.showMessageDialog(this, "You already Time in at: " + rs.getTime("time_in"));// then invalid time in
+                    } else {
+                        sRepo.studentTimeIn(studentId, date, timeInOut);// otherwise time in
+                    }
+
+                } else {
+                    sRepo.studentTimeIn(studentId, date, timeInOut);// othersie time in
+                }
+
+                timer1.start();
+            } else {
+                JOptionPane.showMessageDialog(this, "No user found"); // this is for manual input
+                txtStdId.setText("");
+                txtStdId.requestFocus();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }//GEN-LAST:event_btnTimeInjButton1ActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -563,9 +599,10 @@ public class Barcode extends javax.swing.JFrame {
     }
     boolean flag = false;
 
-    Timer timer = new Timer(500, new ActionListener() {
+    Timer timer = new Timer(0, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+
             if (flag) {
                 txtStdId.setEditable(false);
                 timer.stop();
@@ -590,6 +627,7 @@ public class Barcode extends javax.swing.JFrame {
                 public void insertUpdate(DocumentEvent e) {
 
                     try {
+
                         String student_id = txtStdId.getText();
 
                         ResultSet rs = sRepo.studentInformation(student_id);
@@ -608,18 +646,17 @@ public class Barcode extends javax.swing.JFrame {
                             } catch (IOException ex) {
                                 Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                            txtStdId.setEditable(false);
                         }
+
                     } catch (SQLException ex) {
                         Logger.getLogger(Tlobby.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!flag) {
-                        txtStdId.setEditable(true);
-                    }
-                    timer.start();
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
+
                     txtStdId.setEditable(false);
                     txtAddress.setText("");
                     txtGsection.setText("");
@@ -638,15 +675,18 @@ public class Barcode extends javax.swing.JFrame {
         }
 
     }
+    Timer timer1 = new Timer(0, (e) -> {
+//        DateTimeFormatter dFormatter = DateTimeFormatter.ofPattern("E, MMM dd, yyyy");
+//        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+        LocalTime time = LocalTime.now();
 
-    private void setDateAndTime() {
-        new Timer(0, (e) -> {
-            DateTimeFormatter dFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-            LocalDateTime date = LocalDateTime.now();
-            lblDateTime.setText(dFormatter.format(date));
+        String formattedTime = timeFormatter.format(time);
 
-        }).start();
-    }
+        this.lblDateTime.setText(formattedTime);
+
+    });
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel P1;

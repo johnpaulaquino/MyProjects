@@ -43,6 +43,8 @@ public class Tlobby extends javax.swing.JFrame {
         sRecords.repaint();
         sRecords.revalidate();
         this.setGlassPane(sRecords);
+        
+        
         mapTable.put(0, tbIctHope);
         mapTable.put(1, tbIctLove);
         mapTable.put(2, tbHumssLove);
@@ -51,8 +53,16 @@ public class Tlobby extends javax.swing.JFrame {
         mapTable.put(5, tbAbmLove);
         mapTable.put(6, tbStemHope);
 
+        utils.refreshTable(studentInfoTab,
+                repo,
+                tbIctHope,
+                tbIctLove,
+                tbHumssHope,
+                tbHumssLove,
+                tbHumssFaith,
+                tbAbmLove,
+                tbStemHope);
         this.addListenersForAllTableInTabbed();
-
     }
 
     /**
@@ -797,17 +807,19 @@ public class Tlobby extends javax.swing.JFrame {
         int selectedRow = mapTable.get(selectedTab).getSelectedRow();
         String studentId = (String) mapTable.get(selectedTab).getValueAt(selectedRow, 0);
 
-        repo.deleteStudents(studentId);
-
-        utils.refreshTable(studentInfoTab,
-                repo,
-                tbIctHope,
-                tbIctLove,
-                tbHumssHope,
-                tbHumssLove,
-                tbHumssFaith,
-                tbAbmLove,
-                tbStemHope);
+        if (option == JOptionPane.YES_OPTION) {
+            repo.deleteStudents(studentId);
+            utils.refreshTable(studentInfoTab,
+                    repo,
+                    tbIctHope,
+                    tbIctLove,
+                    tbHumssHope,
+                    tbHumssLove,
+                    tbHumssFaith,
+                    tbAbmLove,
+                    tbStemHope);
+                            
+        }
 
 
     }//GEN-LAST:event_jDeleteStudentActionPerformed
@@ -928,15 +940,15 @@ public class Tlobby extends javax.swing.JFrame {
             DateTimeFormatter timeForrmatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
 
             while (rs.next()) {
-               
+
                 Date dateIn = rs.getDate("date_in");
                 String dateFormatted = dateForrmatter.format(dateIn);
                 LocalTime timeIn = rs.getTime("time_in").toLocalTime();
                 LocalTime timeout = rs.getTime("time_out").toLocalTime();
-                
+
                 String timeInFormatted = timeForrmatter.format(timeIn);// format time
                 String timeOutFormatted = timeForrmatter.format(timeout);
-               
+
                 dft.addRow(new Object[]{
                     dateFormatted, timeInFormatted, timeOutFormatted
                 }
