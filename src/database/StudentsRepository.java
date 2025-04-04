@@ -4,6 +4,7 @@
  */
 package database;
 
+import java.awt.List;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,8 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.UUID;
@@ -123,19 +126,19 @@ public class StudentsRepository {
                 + "Values (?,?,?)";
 
         try (var ps1 = conn.prepareStatement(stmt)) {
-            
+
             ps1.setString(1, studentId);
             ps1.setDate(2, new Date(todayDate.getTime()));
-            
+
             ps1.setTime(3, Time.valueOf(timeIn));
             int row = ps1.executeUpdate();
-            
-            if(row > 0){
-                 System.out.println("Inserte");
-            }else{
+
+            if (row > 0) {
+                System.out.println("Inserted");
+            } else {
                 System.out.println("Failed to insert");
             }
-           
+
         } catch (Exception e) {
             System.out.println("An error occurred " + e.getMessage());
         }
@@ -177,7 +180,6 @@ public class StudentsRepository {
                     if (rs.getTime("time_out") != null) {
                         data.put("time_out", rs.getTime("time_out").toString());
                     }
-
                     return data;
                 }
             } catch (Exception e) {
@@ -341,15 +343,12 @@ public class StudentsRepository {
         String stmt = "Select s.student_id, s.student_name, "
                 + "s.year_level, s.section, s.strand, "
                 + "a.contact_no, a.station, a.address,"
-                + "p.profile_picture, p.profile_name, "
-                + "tr.date_in, tr.time_in, tr.time_out "
+                + "p.profile_picture, p.profile_name "
                 + "FROM students as s "
                 + "INNER JOIN add_info as a "
                 + "ON s.id = a.students_id "
                 + "INNER JOIN students_profile as p "
                 + "ON s.id = p.students_id "
-                + "LEFT JOIN students_tracker tr "
-                + "ON s.student_id = tr.student_id "
                 + "WHERE s.student_id = ?";
         try {
             ps = this.conn.prepareStatement(stmt);
@@ -363,6 +362,32 @@ public class StudentsRepository {
             System.out.println("An error occurred " + e.getMessage());
         }
         return null;
+
+    }
+
+    public ArrayList<String> getStudentsTrackerDate(String studentId) {
+        var list  = new ArrayList<String>();
+
+        String stmt = "Select date_in FROM students_tracker "
+                + "Where student_id = ?";
+
+        try (var ps1 = conn.prepareStatement(stmt)) {
+            ps1.setString(1, studentId);
+            try (var rs = ps1.executeQuery()) {
+
+                while (rs.next()) {
+                        list.add(rs.getDate("date_in").toString());  
+                }
+                return list;
+
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred "+e.getMessage());
+        }
+        return null;
+    }
+    public static void main(String[] args) {
 
     }
 

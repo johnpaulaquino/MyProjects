@@ -7,7 +7,6 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -35,6 +34,7 @@ public class Barcode extends javax.swing.JFrame {
     private StudentsRepository sRepo;
     private Date date;
     private LocalTime timeInOut;
+    private Tlobby record;
 
     /**
      * Creates new form Barcode
@@ -487,26 +487,37 @@ public class Barcode extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeActionPerformed
 
     private void btnTimeOutjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeOutjButton1ActionPerformed
-        Tlobby record = new Tlobby();
+
         timeInOut = LocalTime.now();
+        var timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
 
         String userId = txtStdId.getText();
         HashMap<String, String> data = sRepo.studentGetTimeIn(userId);
 
+        if (data.isEmpty()) {
+            System.out.println("An error Occured");
+            return;
+        }
         LocalTime timeIn = LocalTime.parse(data.get("time_in"));
+        LocalTime timeOut = LocalTime.parse(data.get("time_out"));
 
         String totalRendered = util.totalRenderedTime(timeIn, timeInOut);// Calculate the total rendered
 
         if (data.get("time_out") != null) {
-            JOptionPane.showMessageDialog(this, "You already time out at " + data.get("time_in"));
+            JOptionPane.showMessageDialog(this, "You already time out at "
+                    + timeFormatter.format(timeOut));
         } else {
             sRepo.studentTimeOut(userId, timeInOut, totalRendered);
-
+            JOptionPane.showMessageDialog(this, "Successfully time out!");
         }
         btnTimeOut.setEnabled(true);
+
+        this.dispose();
+        record = new Tlobby();
         record.setVisible(true);
         record.revalidate();
-        dispose();
+
+
     }//GEN-LAST:event_btnTimeOutjButton1ActionPerformed
 
     private void btnTimeInjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeInjButton1ActionPerformed
@@ -517,21 +528,17 @@ public class Barcode extends javax.swing.JFrame {
         try (var rs = sRepo.studentInformation(studentId)) {
 
             if (rs.next()) {
-
                 btnTimeOut.setEnabled(true);
                 btnReset.setEnabled(false);
                 btnTimeIn.setEnabled(false);
-                System.out.println(rs.getDate("date_in"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                if (rs.getDate("date_in") != null) { // Check if the date in is not null
-                    if (rs.getDate("date_in").toString().equals(sdf.format(new Date()))) {// then check if it is currenct date 
-                        JOptionPane.showMessageDialog(this, "You already Time in at: " + rs.getTime("time_in"));// then invalid time in
-                    } else {
-                        sRepo.studentTimeIn(studentId, date, timeInOut);// otherwise time in
-                    }
+                Date dateT = new Date();
+                String formattedDateToday = sdf.format(dateT);
 
+                if (util.isTimedIn(studentId, sRepo, formattedDateToday)) {// then check if it is currenct date 
+                    JOptionPane.showMessageDialog(this, "You already Time in Today!");// then invalid time in
                 } else {
-                    sRepo.studentTimeIn(studentId, date, timeInOut);// othersie time in
+                    sRepo.studentTimeIn(studentId, date, timeInOut);// otherwise time in
                 }
 
                 timer1.start();

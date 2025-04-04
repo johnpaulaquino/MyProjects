@@ -32,19 +32,18 @@ import utils.Utility;
  */
 public class Tlobby extends javax.swing.JFrame {
 
-    private Utility utils = new Utility();
-    private StudentsRepository repo = new StudentsRepository();
-    private int mouseX, mouseY;
-    private Map<Integer, JTable> mapTable = new HashMap<>();
+    private final Utility utils = new Utility();
+    private final StudentsRepository repo = new StudentsRepository();
+    private final Map<Integer, JTable> mapTable = new HashMap<>();
 
     public Tlobby() {
         initComponents();
+        utils.refreshFirstTable(tbIctHope, repo, "ICT", 12, "HOPE");
         sRecords.setVisible(false);
         sRecords.repaint();
         sRecords.revalidate();
         this.setGlassPane(sRecords);
-        
-        
+
         mapTable.put(0, tbIctHope);
         mapTable.put(1, tbIctLove);
         mapTable.put(2, tbHumssLove);
@@ -53,15 +52,6 @@ public class Tlobby extends javax.swing.JFrame {
         mapTable.put(5, tbAbmLove);
         mapTable.put(6, tbStemHope);
 
-        utils.refreshTable(studentInfoTab,
-                repo,
-                tbIctHope,
-                tbIctLove,
-                tbHumssHope,
-                tbHumssLove,
-                tbHumssFaith,
-                tbAbmLove,
-                tbStemHope);
         this.addListenersForAllTableInTabbed();
     }
 
@@ -818,7 +808,7 @@ public class Tlobby extends javax.swing.JFrame {
                     tbHumssFaith,
                     tbAbmLove,
                     tbStemHope);
-                            
+
         }
 
 
@@ -907,7 +897,7 @@ public class Tlobby extends javax.swing.JFrame {
         }
     }
 
-    public void addListenersForAllTableInTabbed() {
+    private void addListenersForAllTableInTabbed() {
         int selectIndex = studentInfoTab.getSelectedIndex();
 
         JTable selectedTable = mapTable.get(selectIndex);

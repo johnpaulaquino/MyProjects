@@ -598,7 +598,7 @@ public class AddStudents extends javax.swing.JFrame {
         cbSection.setSelectedIndex(0);
         tfStudentName.setText("");
         tfContactNo.setText("");
-        lbFilePath.setText("");
+        lbFilePath.setText("File Path");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

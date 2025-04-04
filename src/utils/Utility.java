@@ -20,6 +20,7 @@ import java.text.DateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -110,8 +111,7 @@ public class Utility {
             String studentName,
             String address,
             String station,
-            String totalTimeRendered,
-            int resultSet) {
+            String totalTimeRendered) {
         DefaultTableModel dft = (DefaultTableModel) tableName.getModel();
 
         String addressStation = address + " " + station;
@@ -141,8 +141,6 @@ public class Utility {
         int yearLevel = Integer.parseInt(slicedTitleTab[1]);
         String section = slicedTitleTab[2];
 
-        int count = repo.countValues(strand, section, yearLevel);
-
         Map<Integer, JTable> tableMap = new HashMap<>();
         tableMap.put(0, tbIctHope);
         tableMap.put(1, tbIctLove);
@@ -155,7 +153,7 @@ public class Utility {
             ResultSet rs = repo.getStudentsRecords(strand, yearLevel, section);
             DefaultTableModel dft = (DefaultTableModel) tableMap.get(selectedIndex).getModel();
             dft.setRowCount(0);
-            String totalRendered = "";
+            String totalRendered;
             while (rs.next()) {
                 if (rs.getString("total_rendered") == null) {
                     totalRendered = 0 + " Hour";
@@ -169,12 +167,40 @@ public class Utility {
                         rs.getString("student_name"),
                         rs.getString("address"),
                         rs.getString("station"),
-                        totalRendered,
-                        count);
+                        totalRendered);
             }
 
         } catch (Exception e) {
         } finally {
+        }
+    }
+
+    public void refreshFirstTable(JTable ictTable,
+            StudentsRepository repo,
+            String strand,
+            int yearLevel, String section) {
+        DefaultTableModel dft = (DefaultTableModel) ictTable.getModel();
+        dft.setRowCount(0);
+        try {
+            ResultSet rs = repo.getStudentsRecords(strand, yearLevel, section);
+            String totalRendered;
+            while (rs.next()) {
+                if (rs.getString("total_rendered") == null) {
+                    totalRendered = 0 + " Hour";
+                } else {
+                    totalRendered = rs.getString("total_rendered") + " Hours";
+                }
+
+                this.setValueInTable(
+                        ictTable,
+                        rs.getString("student_id"),
+                        rs.getString("student_name"),
+                        rs.getString("address"),
+                        rs.getString("station"),
+                        totalRendered);
+            }
+
+        } catch (Exception e) {
         }
     }
 
@@ -201,8 +227,7 @@ public class Utility {
 
     public String totalRenderedTime(LocalTime timeIn, LocalTime timeOut) {
 
-        String totalHours = "";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h a");
+        String totalHours;
 
         long seconds = Duration.between(timeIn, timeOut).getSeconds();
         long hours = seconds / 3600;
@@ -211,8 +236,11 @@ public class Utility {
         return totalHours;
     }
 
-    public static void main(String[] args) {
-       
+    public boolean isTimedIn(String studentId,
+            StudentsRepository repo,
+            String dateToday) {
+        var list = repo.getStudentsTrackerDate(studentId);
+        return list.contains(dateToday);
     }
 
 }
